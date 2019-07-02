@@ -23,7 +23,7 @@ states_ba <- states_ba %>%
          "natural", "logging", "disturb", 
          "natural_lag", "logging_lag", "disturb_lag", 
          "old_natural", "old_logging", "old_disturb", 
-         "TYPEHUMUS", "PH_HUMUS", "DRAIN", "ecoreg3") %>% 
+         "TYPEHUMUS",  "DRAIN", "ecoreg3") %>% 
   na.omit() %>% mutate_if(is.matrix, as.vector) %>%
   filter(TYPEHUMUS %in% c("MU", "MD", "MR", "SO", "TO")) %>% # Subset plots for humus type
   mutate(TYPEHUMUS = droplevels(TYPEHUMUS)) #%>%
@@ -32,13 +32,13 @@ states_ba <- states_ba %>%
 
 # State transition matrix to compute transition matrix property
 
-states_trans <- states_ba %>%
-  group_by(plot_id) %>%
-  mutate(year1 = year_measured + 1970) %>%
-  mutate(year2 = lead(year_measured + 1970, 1L)) %>%
-  mutate(time_interv = year2 - year1) %>%
-  mutate(From = states_ba) %>%
-  mutate(To = lead(states_ba, 1L)) %>%
-  mutate(transition = paste0(From, "->", To)) %>%
-  filter(!is.na(year2)) %>%
-  select(ID_PE:plot_id, year1:transition, disturb, natural, logging)
+# states_trans <- states_ba %>%
+#   group_by(plot_id) %>%
+#   mutate(year1 = year_measured + 1970) %>%
+#   mutate(year2 = lead(year_measured, 1L) + 1970) %>%
+#   mutate(time_interv = year2 - year1) %>%
+#   mutate(From = states_ba) %>%
+#   mutate(To = lead(states_ba, 1L)) %>%
+#   mutate(transition = paste0(From, "->", To)) %>%
+#   filter(!is.na(year2)) %>%
+#   select(ID_PE:plot_id, year1:transition, disturb, natural, logging)
