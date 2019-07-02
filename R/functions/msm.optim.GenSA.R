@@ -6,7 +6,7 @@ msm.optim.GenSA <- function(p, gr, hessian, msmdata, qmodel, qcmodel, cmodel, hm
   
   if (is.null(optim.args$control)) optim.args$control <- list()
   
-  optim.args <- c(optim.args, list(par=p$inits, fn=lik.msm,
+  optim.args <- c(optim.args, list(par=p$inits, fn=msm:::lik.msm,
                                    lower = rep(-10, length(p$inits)), 
                                    upper = rep(10, length(p$inits)),
                                    msmdata=msmdata, qmodel=qmodel, qcmodel=qcmodel,
@@ -18,7 +18,7 @@ msm.optim.GenSA <- function(p, gr, hessian, msmdata, qmodel, qcmodel, cmodel, hm
   } else stop("\"GenSA\" package not available")
    
   if (hessian)
-    opt$hessian <- optimHess(par=opt$par, fn=lik.msm, gr=gr,
+    opt$hessian <- optimHess(par=opt$par, fn=msm:::lik.msm, gr=gr,
                              msmdata=msmdata, qmodel=qmodel, qcmodel=qcmodel,
                              cmodel=cmodel, hmodel=hmodel, paramdata=p)
 
@@ -29,8 +29,9 @@ msm.optim.GenSA <- function(p, gr, hessian, msmdata, qmodel, qcmodel, cmodel, hm
   p
 }
 
-# msm0 <- msm(states_num ~ year_measured, subject = plot_id, data = filter(states_ba, plot_id<500),
-#             qmatrix = Q, 
-#             gen.inits = TRUE,
-#             obstype = 1,
-#             opt.method = "GenSA")
+msm0 <- msm(states_num ~ year_measured, subject = plot_id, data = filter(states_ba, plot_id<500),
+            qmatrix = Q,
+            gen.inits = TRUE,
+            obstype = 1,
+            opt.method = "GenSA")
+# Error in abs(p$constr) : non-numeric argument to mathematical function
