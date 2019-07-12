@@ -1,12 +1,15 @@
 ### Plot best model ####
 
+
+source('R/functions/plot_msm.R')
+
 ### DATA ####
 
 source('R/scripts/3_prep_trans.R')
 
 # Load msm results
 
-load("res/msm_all.rda")
+load("res/msm_all85.rda")
 
 msm_glb <- msm_all[["msm_glb"]]
 
@@ -21,7 +24,7 @@ varnames <- c("Temperature", "CMI",
 pdf("res/res_state/figx_HR.pdf",
     width = 7, height = 6)
 #quartz(width = 7, height = 6)
-plot_risk(msm5, varnames = varnames)
+plot_risk(msm_glb, varnames = varnames)
 dev.off()
 
 quartz(width = 4, height = 7)
@@ -59,15 +62,16 @@ eig$vectors[,4]/sum(eig$vectors[,4])
 pmatrix.msm(msm5, t=10, covariates = list(natural="0", logging = "0"))
 
 
-covar_nat <- list(list(natural1 = 0, natural2 = 0, logging1 = 0, logging2 = 0), 
-                  list(natural1 = 1, natural2 = 0, logging1 = 0, logging2 = 0),
-                  list(natural1 = 0, natural2 = 1, logging1 = 0, logging2 = 0))
+covar_nat <- list(list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 0), 
+                  list(natural_lag1 = 1, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 0),
+                  list(natural_lag1 = 0, natural_lag2 = 1, logging_lag1 = 0, logging_lag2 = 0))
 
-covar_log <- list(list(natural1 = 0, natural2 = 0, logging1 = 0, logging2 = 0), 
-                  list(natural1 = 0, natural2 = 0, logging1 = 1, logging2 = 0),
-                  list(natural1 = 0, natural2 = 0, logging1 = 0, logging2 = 1))
+covar_log <- list(list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 0), 
+                  list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 1, logging_lag2 = 0),
+                  list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 1))
 
-mm.msm5 <- model.matrix(form_all, states_ba)
+mf <- model.matrix(form_all, states_ba)
+
 
 mat <- matrix(c(0:14,0,0,15,15,0), 5, 4)
 mat <- rbind(mat, c(0,16,16,0))
@@ -89,7 +93,7 @@ for(st in states) {
 par(mar=c(0,2,0,.5))
 plot0(text = "Natural disturbances", fill = "grey95", font = 2, cex = 1.2)
 par(mar=c(1,2,1,.5))
-plot_pmatrix(msm5, covar = covar_nat, mm = mm.msm5)
+plot_pmatrix(msm_glb, covar = covar_nat, mm = mf)
 
 par(mar=c(0,2,0,.5))
 plot0(text = "Harvesting", fill = "grey95", font = 2, cex = 1.2)

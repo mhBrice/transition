@@ -12,23 +12,27 @@ st_col <- c("#158282", "#A1BD93","#FEAC19", "#D43650")
 
 states_ba <- states_ba %>% 
   mutate(year_measured = year_measured - 1970) %>% 
-  mutate_at(vars(EPMATORG:age_mean, aTP:GSlength), scale) 
+  mutate_at(vars(EPMATORG:age_mean, aTP:GSlength), scale)
 
 # Select and subset
 
 states_ba <- states_ba %>% 
   select(ID_PE:states_num6, 
          "sTP", "GSlength", "sPP", "CMI",
-         "TP_xmax","TP_xmin", "CMI_xmin",
          "natural", "logging", "disturb", 
          "natural_lag", "logging_lag", "disturb_lag", 
-         "old_natural", "old_logging", "old_disturb", 
          "TYPEHUMUS",  "DRAIN", "ecoreg3") %>% 
   na.omit() %>% mutate_if(is.matrix, as.vector) %>%
   filter(TYPEHUMUS %in% c("MU", "MD", "MR", "SO", "TO")) %>% # Subset plots for humus type
   mutate(TYPEHUMUS = droplevels(TYPEHUMUS)) #%>%
   #group_by(ID_PE) %>% filter(n() > 1)
 
+# Remove test data (fifth inventory)
+train_dat <- filter(states_ba, year_measured+1970 <= 2015) %>%
+  group_by(ID_PE) %>% filter(n() > 1)
+test_dat <- filter(states_ba, year_measured+1970 >= 2015) %>%
+  filter(ID_PE %in% train_dat$ID_PE)
+ 
 
 # State transition matrix to compute transition matrix property
 

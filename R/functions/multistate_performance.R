@@ -3,35 +3,14 @@
 # from https://www.datascienceblog.net/post/machine-learning/performance-measures-multi-class-problems/
 
 ### Prediction ###
+# pmat_fun <- function(mod, t, covariates, from) {
+#   pmat <- pmatrix.msm(x = mod, t = t, covariates = as.list(covariates[i,]))
+#   st_from <- which(states == from[i])
+#   pvec <- pmat[st_from,]
+#   p_ls[[i]] <- pvec
+# }
+# apply(dat, 1, function(y) pmat_fun(mod, dat['t'], dat['cov_names'], dat['from']))
 
-msm_pred <- function(mod, covariates = NULL, t, from, ci = "none",
-                      states = c("Boreal", "Mixed", "Pioneer", "Temperate")) {
-  
-  n_trans <- length(from)
-  
-  # Predicted probability
-  p_ls <- list()  
-
-  for(i in 1:n_trans) {
-    pmat <- pmatrix.msm(x = mod, t = t[i], covariates = as.list(covariates[i,]), ci = ci)
-    st_from <- which(states == from[i])
-    pvec <- pmat[st_from,]
-    p_ls[[i]] <- pvec
-  }
-  
-  if(ci == "none") {
-    p_df <- do.call(rbind, p_ls)
-  } else {
-    p_df <- list()
-    p_df[["estimate"]] <- do.call(rbind, lapply(p_ls, function(x) x[,"estimate"]))
-    p_df[["lower"]] <- do.call(rbind, lapply(p_ls, function(x) x[,"lower"]))
-    p_df[["upper"]] <- do.call(rbind, lapply(p_ls, function(x) x[,"upper"]))
-    
-    p_df <- lapply(p_df, "colnames <-", states)
-  }
-  
-
-}  
 
 ### A. Hard classifier method (use predicted states, not probability) ####
 
@@ -133,3 +112,71 @@ multiclass.auc <- function(pred.matrix, ref.outcome) {
 chi_contrib <- function(observ, expect) {
   rowSums(((observ - expect)^2)/expect)
 }
+
+### PSEUDO R2 ####
+
+PseudoR2 <- function (mod0, mod, to = NULL, dat = NULL) {
+  
+  
+  D.full <- mod$minus2loglik
+  L.full <- D.full/-2
+  D.base <- mod0$minus2loglik
+  L.base <- D.base/-2
+  
+  G2 <- -2 * (L.base - L.full)
+  n <- nrow(mod$data$mf)
+  
+  edf <- mod$paramdata$npars
+  
+  McFadden <- 1 - (L.full/L.base)
+  McFaddenAdj <- 1 - ((L.full - edf)/L.base)
+  Nagelkerke <- (1 - exp((D.full - D.base)/n))/(1 - exp(-D.base/n))
+  CoxSnell <- 1 - exp(-G2/n)
+  
+  BIC <- D.full + log(n)*edf
+  
+  if(!is.null(dat)) {
+    to <- DescTools::Dummy(to, "full")
+    y.hat.resp <- msm_pred(mod, t = dat[,1], from = dat[,2], covariates = dat[,-c(1,2)])
+    Efron <- (1 - (sum(rowSums((to - y.hat.resp)^2)))/(sum(rowSums((to - apply(to,2,mean))^2))))
+    biserial_cor <- c()
+    for(s in (colnames(to))) {
+      biserial_cor[s] <- cor(to[,s], y.hat.resp[,s])^2
+    }
+    
+  } else {
+    Efron = NA
+    biserial_cor = NA
+  }
+  res <- c(McFadden = McFadden, McFaddenAdj = McFaddenAdj,
+           CoxSnell = CoxSnell, Nagelkerke = Nagelkerke, 
+           Efron = Efron, biserial_cor = biserial_cor,
+           AIC = AIC(mod), logLik = L.full,
+           logLik0 = L.base, G2 = G2)
+  
+  return(res)
+}
+
+### WALD TEST OF COVARIATE SIGNIFICANCE ####
+wald <- function(coeff, cov, index = NULL, h0 = NULL)
+{
+  # check input is still missing
+  
+  if (is.null(index)) { index <- 1:length(coeff) }
+  w <- length(index)
+  
+  if (is.null(h0)) { h0 <- rep(0, w) } else { h0 <- rep(h0, w) }
+  
+  l <- matrix(rep(0, length(coeff) * w), ncol = length(coeff))
+  for(i in 1:w) { l[i, index[i]] <- 1 }
+  
+  f <- (l %*% coeff) - h0
+  mat <- qr.solve(l %*% cov %*% t(l))
+  stat <- t(f) %*% mat %*% f
+  p <- 1 - pchisq(stat, df = w)
+  
+  output <- c(stat, w, p)
+  names(output) <- c("chi2", "df", "p")
+  output
+}
+
