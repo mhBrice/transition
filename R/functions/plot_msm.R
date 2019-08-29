@@ -49,7 +49,7 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
   layout(mat, heights = c(1,1,1,1,.5))  
   
   # Plot
-  par(mar = c(.5,2,.5,.5), oma = c(0,2,2,0))
+  par(mar = c(.3,2,.3,.5), oma = c(0,2,1.5,0))
   for(i in trans) {
     
     tmp <- trans_list[[i]]
@@ -224,36 +224,45 @@ plot_risk2 <- function(mod, mod0=NULL, varnames=NULL,
 
 ### Function to plot transition matrix ####
 
-plot_trans <- function(pmat, ci = NULL, cols = c("#FDF7F7", "red3", "#060000")) {
+plot_trans <- function(pmat, ci = NULL, cols = c("#FDF7F7", "red3", "#060000"), 
+                       states_lab = NULL, labels = FALSE, main = NULL) {
   
   col <- colorRampPalette(cols)(200)
-  text.col <- pmat
-  text.col[text.col<=.5] <- "black"
-  text.col[text.col>.5]="white"
   
   if(!is.null(ci)) {
     ci <- matrix(paste0("(", round(ci[,,1],2), ", ", round(ci[,,2],2), ")"), 4)
   }
   
+  if(is.null(states_lab)) states_lab = colnames(tr)
+  
   n <- nrow(pmat)
   
+  # Plot matrix
   image2(pmat, col = col, border = "white", lwd = 2)
+  
+  # Axis labels
   coordx <- seq(0, 1, len = n)
   coordy <- rev(coordx)
-  axis(3, at = coordx, labels = colnames(tr),
-       tick = FALSE, cex.axis = 1, line = -.5)
-  axis(2, at = coordy, labels = colnames(tr),
-       tick = FALSE, cex.axis = 1, las = 1, line = -.5)
-  mtext("From", 2, font = 2, at = 1.2, las = 1, line = 2.5, cex = .8)
-  mtext("To", 3, font = 2, at = -.2, line = 2.5, cex = .8)
+  axis(3, at = coordx, labels = states_lab, font = 2, 
+       tick = FALSE, cex.axis = 1, line = -1, col.axis = "grey15")
+  axis(2, at = coordy, labels = states_lab, font = 2, 
+       tick = FALSE, cex.axis = 1, las = 1, line = -.8, col.axis = "grey15")
+  if(labels) {
+    mtext("From", 2, font = 3, at = 1.1, las = 1, line = 1.5, cex = .8)
+    mtext("To", 3, font = 3, at = -.2, line = 1.3, cex = .8)
+  }
   
+  # Main
+  mtext(main, 3, line = 1.7, font = 1, cex = .85)
+
+  # Probabilities
   for(i in 1:n) {
     if(is.null(ci)) {
     text(x = coordx, y = coordy[i], labels = round(pmat[i,], 2), 
-         col = ifelse(pmat[i,]<.5, "black", "white"), cex = 1.1, xpd = NA)
+         col = ifelse(pmat[i,]<.5, "black", "white"), cex = 1, xpd = NA)
     } else {
       text(x = coordx, y = coordy[i]+.1, labels = round(pmat[i,], 2), 
-           col = ifelse(pmat[i,]<.5, "black", "white"), cex = 1.1, xpd = NA)
+           col = ifelse(pmat[i,]<.5, "black", "white"), cex = 1, xpd = NA)
       text(x = coordx, y = coordy[i]-.2, labels = ci[i,], 
            col = ifelse(pmat[i,]<.5, "black", "white"), cex = .8, xpd = NA)
     }
@@ -264,7 +273,7 @@ plot_trans <- function(pmat, ci = NULL, cols = c("#FDF7F7", "red3", "#060000")) 
 
 ### plot transition probabilities through time ####
 
-plot_pmatrix <- function(mod, t = 1:40, covar = "mean", mm = NULL, ci = "none", 
+plot_pmatrix <- function(mod, t = 1:40, covar = "mean", ci = "none", 
                          st_col = c("#158282", "#A1BD93","#FEAC19", "#D43650"),
                          states = c("Boreal", "Mixed", "Pioneer", "Temperate"), 
                          main = F, yaxis = T) {
@@ -272,12 +281,9 @@ plot_pmatrix <- function(mod, t = 1:40, covar = "mean", mm = NULL, ci = "none",
   
   
   if(is.list(covar)) {
-    
     p <- list()
-    varmean <- as.list(apply(mm[,-1], 2, mean))
     for(i in 1:length(covar)) {
-      varmean[names(covar[[i]])] <- covar[[i]]
-      p_tmp <- pmatrix.msm(mod, t = t, covariates = varmean, ci = ci)
+      p_tmp <- pmatrix.msm(mod, t = t, covariates = covar[[i]], ci = ci)
       class(p_tmp) <- "array"
       p[[i]] <- p_tmp
     }
@@ -304,15 +310,15 @@ plot_pmatrix <- function(mod, t = 1:40, covar = "mean", mm = NULL, ci = "none",
         from <- p[[i]][st_from, , ]
         
         for(st_to in 1:4) {
-          lty = c(3,2,1)
-          lines(t, from[st_to,], col = st_col[st_to], lwd = 1.2, lty = lty[i])
+          lty = 1:3
+          lines(t, from[st_to,], col = st_col[st_to], lwd = 1.3, lty = lty[i])
         }  
       }
     } else {
       from <- p[st_from, , ]
       
       for(st_to in 1:4) {
-        lines(t, from[st_to,], col = st_col[st_to], lwd = 1.2, lty = 1)
+        lines(t, from[st_to,], col = st_col[st_to], lwd = 1.3, lty = 1)
       }  
     }
     

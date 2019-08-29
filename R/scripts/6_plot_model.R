@@ -1,5 +1,11 @@
 ### Plot best model ####
 
+### PACKAGES ####
+library(graphicsutils)
+library(dplyr)
+library(msm)
+
+### FUNCTIONS ####
 
 source('R/functions/plot_msm.R')
 
@@ -9,80 +15,74 @@ source('R/scripts/3_prep_trans.R')
 
 # Load msm results
 
-load("res/msm_all85.rda")
+load("res/msm_all75_drainph.rda")
 
-msm_glb <- msm_all[["msm_glb"]]
+msm_glb <- msm_all75[["msm_glb"]]
 
+### Estimated ratio of transition intensities
+x = covar_nat[[2]]
+unique(states_ba$DRAIN)
+x$DRAIN = -1.1915525
+qratio.msm(msm_glb, ind1 = c(2,4), ind2 = c(4,2), covariates =x)
+qratio.msm(msm_glb, ind1 = c(3,1), ind2 = c(1,3))
+qratio.msm(msm_glb, ind1 = c(1,2), ind2 = c(2,1), covariates = x)
+0.0237933/0.0139635
 
 ### PLOT COEFFICIENTS BEST MODEL ####
 
 varnames <- c("Temperature", "CMI", 
+              "Drainage", "pH", 
               "Natural 1", "Natural 2", 
-              "Logging 1", "Logging 2", 
-              "Moder", "Mor")
+              "Logging 1", "Logging 2")
 
-pdf("res/res_state/figx_HR.pdf",
+pdf("res/fig2_HR.pdf",
     width = 7, height = 6)
 #quartz(width = 7, height = 6)
 plot_risk(msm_glb, varnames = varnames)
 dev.off()
 
-quartz(width = 4, height = 7)
-plot_risk2(msm5, varnames = varnames)
+# quartz(width = 4, height = 7)
+# plot_risk2(msm5, varnames = varnames)
 
 
+### PLOT INFLUENCE OF COVARIATE ON STEADY STATE ####
 
-
-
-mean(states_ba$sTP)
-mf <- model.matrix(~sTP + CMI + natural + logging + TYPEHUMUS, states_ba)
-
-x=qmatrix.msm(msm5, covariates = list(sTP=mean(mm.msm5[,"sTP"]), CMI=mean(mm.msm5[,"CMI"]),
-                                      natural1 = mean(mm.msm5[,"natural1"]),
-                                      natural2 = mean(mm.msm5[,"natural2"]),
-                                      logging1 = 0,
-                                      logging2 = 1,
-                                      TYPEHUMUSMD = mean(mm.msm5[,"TYPEHUMUSMD"]),
-                                      TYPEHUMUSMR = mean(mm.msm5[,"TYPEHUMUSMR"])))
-eig=eigen(t(x$estimates))
-eig$vectors[,4]/sum(eig$vectors[,4])
 
 
 ### PREVALENCE OF STATES THROUGH TIME ####
 
-#prevalence.msm(msm5, times = c(10,25,40), covariates = 'mean')
+prevalence.msm(msm_glb, times = c(10,25,40), covariates = 'population')
 
-
-
-# Standard errors
-# par_se<-sqrt(diag(solve(msm5$opt$hessian)))
 
 ### PLOT TRANSITION PROBABILITY ####
 
-pmatrix.msm(msm5, t=10, covariates = list(natural="0", logging = "0"))
+aggregate(states_ba[,c("natural", "logging")], 
+          by = list(states_ba$ecoreg3), table)
 
+envmean <- aggregate(states_ba[,c("sTP", "CMI", "DRAIN", "PH_HUMUS")], 
+                     by = list(states_ba$ecoreg3), mean)
+mixed_mean <- envmean[3,-1]
 
-covar_nat <- list(list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 0), 
-                  list(natural_lag1 = 1, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 0),
-                  list(natural_lag1 = 0, natural_lag2 = 1, logging_lag1 = 0, logging_lag2 = 0))
+covar_nat <- list(c(mixed_mean), 
+                  c(natural1 = 1, mixed_mean),
+                  c(natural2 = 1, mixed_mean))
 
-covar_log <- list(list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 0), 
-                  list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 1, logging_lag2 = 0),
-                  list(natural_lag1 = 0, natural_lag2 = 0, logging_lag1 = 0, logging_lag2 = 1))
+covar_log <- list(c(mixed_mean), 
+                  c(logging1 = 1, mixed_mean),
+                  c(logging2 = 1, mixed_mean))
 
-mf <- model.matrix(form_all, states_ba)
 
 
 mat <- matrix(c(0:14,0,0,15,15,0), 5, 4)
 mat <- rbind(mat, c(0,16,16,0))
 
 
-pdf("res/res_state90/figx_proba.pdf",
-    width = 7, height = 6.5)
-#quartz(width = 7, height = 6.5)
-layout(mat, widths = c(.6,1,1,.5), heights = c(.2,1,1,1,1,.2))
+pdf("res/figSupp_proba.pdf",
+    width = 7, height = 7)
+#quartz(width = 7, height = 7)
+layout(mat, widths = c(.6,1,1,.45), heights = c(.17,1,1,1,1,.2))
 
-par(mar=c(8,0,1,2))
+par(mar=c(9,0,1,2))
 
 for(st in states) {
   plot0(fill = "grey95")
@@ -90,15 +90,15 @@ for(st in states) {
 }
 
 
-par(mar=c(0,2,0,.5))
-plot0(text = "Natural disturbances", fill = "grey95", font = 2, cex = 1.2)
+par(mar=c(0,2,0,0))
+plot0(text = "Natural", fill = "grey95", font = 2, cex = 1.2)
 par(mar=c(1,2,1,.5))
-plot_pmatrix(msm_glb, covar = covar_nat, mm = mf)
+plot_pmatrix(msm_glb, covar = covar_nat)
 
-par(mar=c(0,2,0,.5))
-plot0(text = "Harvesting", fill = "grey95", font = 2, cex = 1.2)
+par(mar=c(0,2,0,0))
+plot0(text = "Logging", fill = "grey95", font = 2, cex = 1.2)
 par(mar=c(1,2,1,.5))
-plot_pmatrix(msm5, covar = covar_log, yaxis = F, mm = mm.msm5)
+plot_pmatrix(msm_glb, covar = covar_log, yaxis = F)
 
 mtext("Probability of transition", 2, line = -9.8, outer = T, cex= .75, font =2)
 
@@ -106,9 +106,9 @@ mtext("Probability of transition", 2, line = -9.8, outer = T, cex= .75, font =2)
 par(mar=c(5,0,4,0))
 plot0()
 legend("top", legend = states, title = "Transition to", 
-       col = st_col, cex = 1.1, lwd = 1.2, bty = "n")
+       col = st_col, cex = 1.1, lwd = 1.3, bty = "n")
 legend("bottom", legend = c("Minor", "Moderate", "Major"), title = "Disturbance", 
-       col = "grey15", cex = 1.1, lwd = 1.2, lty = 3:1, bty = "n")
+       col = "grey15", cex = 1.1, lwd = 1.3, lty = 1:3, bty = "n")
 
 par(mar=c(0,0,1,0))
 plot0(text = "Time (Years)", font = 2, cex = 1.1)
@@ -116,3 +116,4 @@ plot0(text = "Time (Years)", font = 2, cex = 1.1)
 dev.off()
 
 
+prevalence.msm(msm_glb, times = c(0,10,20,30,40), ci = "none", plot = T)
