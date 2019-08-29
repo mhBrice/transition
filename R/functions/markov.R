@@ -58,97 +58,83 @@ diag2 <- function(x) {
 }
 
 eigen_left <- function(x) {
-  if(is.matrix(x)) { eigen(t(x)) }
-  if(is.array(x)) { eigen(t(x[,,"estimate"])) }
+  if(is.matrix(x)) { 
+    eigen(t(x)) 
+  } else { 
+    eigen(t(x[,,"estimate"])) 
+    }
 }
 
-succession <- function(pmat, jump, ci = T) {
+succession <- function(pmat, jump) {
   
-  if(ci) {
-    states <- colnames(pmat$estimates)
-    pmat <- pmat[1:4,1:4]
-    
-    dimnames(pmat)[[1]] <- states
-    dimnames(pmat)[[2]] <- states
-    
-    # colonization from pioneer to 
-    p_col <- pmat[,"Pioneer",1:3]
-    
-    # replacement by a species
-    pmatmp <- pmat
-    diag(pmatmp[,,1]) <- 0
-    diag(pmatmp[,,2]) <- 0
-    diag(pmatmp[,,3]) <- 0
-    p_replaceby <- colSums(pmatmp)/(length(states)-1)
-    
-  } else {
-    states <- colnames(pmat)
-    class(pmat) <- "matrix"
-    
-    # colonization from pioneer to 
-    p_col <- pmat[,"Pioneer"]
-    
-    # replacement by a species
-    pmatmp <- pmat
-    diag(pmatmp) <- 0
-    p_replaceby <- colSums(pmatmp)/(length(states)-1)
-  }
+  states <- colnames(pmat)
+  class(pmat) <- "matrix"
   
+  # colonization from pioneer to 
+  p_col <- pmat[,"Pioneer"]
   
+  # replacement by a species
+  pmatmp <- pmat
+  diag(pmatmp) <- 0
+  p_replaceby <- colSums(pmatmp)/(length(states)-1)
+
   # replacement of a species
-  p_replaceof <- 1 - diag2(pmat)
+  p_replaceof <- 1 - diag(pmat)
   
   # peristence
-  p_persist <- diag2(pmat)
+  p_persist <- diag(pmat)
   
   # turnover
   turn_time <- 1/p_replaceof
   
-  # convergence
+  # convergence - Damping ratio
   eig <- eigen_left(pmat)
-  convergence <- eig$values[1]/eig$values[2]
+  damping <- eig$values[1]/eig$values[2]
   
-  # Damping ratio (*10 because pmatrix on 10 years) = half life to steady state
-  damping = log(2)/log(convergence)*10
+  # half life to steady state
+  halflife = log(2)/log(damping)
   
-  # Recurrence
+  # Steady state
   pi <- t(eig$vectors[,1])
   
   steady <- pi/sum(pi)
   colnames(steady) <- states
-  
-  if(is.matrix(pmat)) {
-    recur <- (1 - steady)/(steady*(p_replaceof))
-  } else {
-    recur <- (1 - steady)/(steady*(p_replaceof[,"estimate"]))
-  }
+
+  # Recurrence
+  recur_st <- (1 - steady)/(steady*(p_replaceof))
+  recur_st_contrib <- recur_st*steady
   
   # Entropy
-  jump <- jump[1:4,]
   
   log_jump <- log(jump)
   log_jump[which(log_jump=="-Inf")] <- 0
   
-  entropy_st <- -apply(jump*log_jump, 3, rowSums)
+  entropy_st <- -rowSums(jump*log_jump)
+  entropy_st_contrib <- entropy_st*steady
   
-  entropy_all <- sum(steady*entropy_st[,"estimate"])
+  entropy_comm <- sum(entropy_st_contrib)
   
-  entropy_rel <- entropy_all/log(length(states)-1)
+  entropy_commrel <- entropy_comm/log(length(states)-1)
+  
+  # Community metrics
+  mean_turn_time <- sum(steady*turn_time)
+  recur_comm <- sum(recur_st_contrib)
   
   # result
   list(p_colonization = p_col, 
        p_replaceof = p_replaceof, 
        p_replaceby = p_replaceby, 
        p_persist = p_persist,
-       turn_time = turn_time, 
+       turn_time = turn_time,
+       mean_turn_time = mean_turn_time,
        steady = steady,
-       convergence = convergence, 
+       halflife = halflife, 
        damping = damping,
-       recurrence_time = recur,
-       entropy_st = entropy_st,
-       entropy_all = entropy_all, entropy_rel = entropy_rel)
+       recur_st = recur_st, recur_st_contrib = recur_st_contrib,
+       recur_comm = recur_comm,
+       entropy_st = entropy_st, entropy_st_contrib = entropy_st_contrib,
+       entropy_comm = entropy_comm, entropy_commrel = entropy_commrel)
 }
-# succession(tr, disturb = "Pioneer")
 
 
 ##log linear model

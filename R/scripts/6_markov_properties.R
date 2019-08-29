@@ -14,37 +14,39 @@ source('R/scripts/prep_trans.R')
 
 # Load msm results
 
-load("res/model_all.rda")
-msm5 <- model_all$msm5
+load("res/msm_all75_drainph.rda")
+
+msm_glb <- msm_all75[["msm_glb"]]
 
 ### PREDICTED TRANSITION PROBABILITY MATRIX AND JUMP MATRIX ####
 
-mm <- model.matrix(~sTP + CMI + TYPEHUMUS, states_ba)
-varmean <- apply(mm[,-1], 2, mean)
+envmean <- aggregate(states_ba[,c("sTP", "CMI", "DRAIN", "PH_HUMUS")], 
+                     by = list(states_ba$ecoreg3), mean)
+mixed_mean <- envmean[3,-1]
 
 # Probability matrix
 
-p0 <- pmatrix.msm(msm5, t=10, covariates = as.list(varmean), ci = "normal")
+p0 <- pmatrix.msm(msm_glb, t=10, covariates = as.list(mixed_mean), ci = "normal")
 
-pN1 <- pmatrix.msm(msm5, t=10, covariates = as.list(c(varmean, natural1=1)), ci = "normal")
+pN1 <- pmatrix.msm(msm_glb, t=10, covariates = as.list(c(mixed_mean, natural1=1)), ci = "normal")
 
-pN2 <- pmatrix.msm(msm5, t=10, covariates = as.list(c(varmean, natural2=1)), ci = "normal")
+pN2 <- pmatrix.msm(msm_glb, t=10, covariates = as.list(c(mixed_mean, natural2=1)), ci = "normal")
 
-pL1 <- pmatrix.msm(msm5, t=10, covariates = as.list(c(varmean, logging1=1)), ci = "normal")
+pL1 <- pmatrix.msm(msm_glb, t=10, covariates = as.list(c(mixed_mean, logging1=1)), ci = "normal")
 
-pL2 <- pmatrix.msm(msm5, t=10, covariates = as.list(c(varmean, logging2=1)), ci = "normal")
+pL2 <- pmatrix.msm(msm_glb, t=10, covariates = as.list(c(mixed_mean, logging2=1)), ci = "normal")
 
 # Jump matrix 
 
-jump0 <- pnext.msm(msm5,covariates = as.list(varmean))
+jump0 <- pnext.msm(msm_glb, covariates = as.list(mixed_mean))
 
-jumpN1 <- pnext.msm(msm5, covariates = as.list(c(varmean, natural1=1)))
+jumpN1 <- pnext.msm(msm_glb, covariates = as.list(c(mixed_mean, natural1=1)))
 
-jumpN2 <- pnext.msm(msm5, covariates = as.list(c(varmean, natural2=1)))
+jumpN2 <- pnext.msm(msm_glb, covariates = as.list(c(mixed_mean, natural2=1)))
 
-jumpL1 <- pnext.msm(msm5, covariates = as.list(c(varmean, logging1=1)))
+jumpL1 <- pnext.msm(msm_glb, covariates = as.list(c(mixed_mean, logging1=1)))
 
-jumpL2 <- pnext.msm(msm5, covariates = as.list(c(varmean, logging2=1)))
+jumpL2 <- pnext.msm(msm_glb, covariates = as.list(c(mixed_mean, logging2=1)))
 
 p_list <- list(p0, pN1, pN2, pL1, pL2)
 j_list <- list(jump0, jumpN1, jumpN2, jumpL1, jumpL2)
@@ -63,24 +65,24 @@ for(i in 1:length(p_list)) {
 
 ### Plot transition matrix #####
 
-dist_title <- c("Minor", "Moderate natural", "Major natural", "Moderate harvest", "Major harvest")
+dist_title <- c("Minor", "Moderate natural", "Major natural", 
+                "Moderate logging", "Major logging")
 
 mat <- matrix(c(0,1,1,0,
                 2,2,4,4,
-                3,3,5,5),4,byrow = F)
+                3,3,5,5),3,byrow = T)
 
-pdf("res/res_state85/figx_pmatrix.pdf",
-    width = 9, height = 5.5)
-#quartz(width = 9, height = 5.5)
+pdf("res/fig4_pmatrix.pdf", width = 4.2, height = 6.2)
+#quartz(width = 4.2, height = 6.2)
 layout(mat)
-par(mar=c(1,5,5,1), oma = c(0,1,0,0))
+par(mar=c(.5,2,3.5,1))
 for(i in 1:length(p_list)) {
   tr <- p_list[[i]]
-  #ci <- tr[1:4,,][,,2:3]
-  tr <- tr[1:4,,][,,"estimate"]
-  dimnames(tr) <- list(states,states)
-  plot_trans(pmat=tr)
-  mtext(dist_title[i], 3, line = 3, font = 2, cex = .9)
+  tr <- tr[["estimates"]]
+  #dimnames(tr) <- list(states,states)
+  if(i == 1) labels = TRUE else labels = FALSE
+  plot_trans(pmat=tr, states_lab = c("B", "M", "P", "T"), 
+             labels = labels, main = dist_title[i])
 }
 dev.off()
 
@@ -116,16 +118,16 @@ dev.off()
 
 init_prop <- states_ba %>% group_by(plot_id) %>% slice(1) 
 
-init_prop <- table(init_prop$states_ba)
+init_prop <- table(init_prop$states)
 
 init_prop <- init_prop/sum(init_prop)
 
 
-dist_list <- list(as.list(as.list(varmean)),
-                  as.list(c(varmean, natural1=1)),
-                  as.list(c(varmean, natural2=1)),
-                  as.list(c(varmean, logging1=1)),
-                  as.list(c(varmean, logging2=1)))
+dist_list <- list(as.list(as.list(mixed_mean)),
+                  as.list(c(mixed_mean, natural1=1)),
+                  as.list(c(mixed_mean, natural2=1)),
+                  as.list(c(mixed_mean, logging1=1)),
+                  as.list(c(mixed_mean, logging2=1)))
 
 mat <- matrix(c(1,2,3,0,4,5),2,byrow = T)
 
@@ -152,7 +154,7 @@ for(d in 1:5) {
   # Probability matrix
   p_list <- list()
   for(t in time) {
-    p <- pmatrix.msm(msm5, t=t, covariates = dd, ci = ci)
+    p <- pmatrix.msm(msm_glb, t=t, covariates = dd, ci = ci)
     p <- p[1:4,,]
     p <- provideDimnames(p, base = list(states,states))
     p_list[[t]] <- p
@@ -189,6 +191,17 @@ for(d in 1:5) {
 }
 dev.off()
 
+### TOTAL LENGTH OF STAY ####
+totlos.msm(msm_glb, start=init_prop, fromt=0, tot=100, covariates = covar_log[[2]])
+
+### Expected first passage time ####
+
+efpt.msm(msm_glb, tostate = 4)
+
+### Estimated ratio of transition intensities ####
+# M-T is xx times as likely as T-M under the no disturbance scenario
+qratio.msm(msm_glb, ind1 = c(2,4), ind2 = c(4,2), covariates = dist_list[[4]])
+qratio.msm(msm_glb, ind1 = c(1,2), ind2 = c(2,1), covariates = dist_list[[1]])
 
 # quartz(width = 11, height = 3.5)
 # par(mfrow=c(1,3), mar=c(3,5.5,5,1), oma = c(0,1,0,0))
