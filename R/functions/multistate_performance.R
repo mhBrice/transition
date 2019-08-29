@@ -157,26 +157,88 @@ PseudoR2 <- function (mod0, mod, to = NULL, dat = NULL) {
   return(res)
 }
 
-### WALD TEST OF COVARIATE SIGNIFICANCE ####
-wald <- function(coeff, cov, index = NULL, h0 = NULL)
-{
-  # check input is still missing
-  
-  if (is.null(index)) { index <- 1:length(coeff) }
-  w <- length(index)
-  
-  if (is.null(h0)) { h0 <- rep(0, w) } else { h0 <- rep(h0, w) }
-  
-  l <- matrix(rep(0, length(coeff) * w), ncol = length(coeff))
-  for(i in 1:w) { l[i, index[i]] <- 1 }
-  
-  f <- (l %*% coeff) - h0
-  mat <- qr.solve(l %*% cov %*% t(l))
-  stat <- t(f) %*% mat %*% f
-  p <- 1 - pchisq(stat, df = w)
-  
-  output <- c(stat, w, p)
-  names(output) <- c("chi2", "df", "p")
-  output
+#### BRIER SCORE (MSE) ####
+
+brier_orig <- function(to, pred){
+  mean(rowSums((pred - to)^2))
 }
 
+brier_contrib <- function(to, pred){
+  rowSums((pred - to)^2)
+}
+
+brier_state <- function(to, pred) {
+  colMeans((pred - to)^2)
+}
+
+brier_skill <- function(BS, BSref) 1 - BS/BSref
+
+
+logscore_state <- function(to, pred, states = c("Boreal", "Mixed", "Pioneer", "Temperate")) {
+  tmp <- c()
+  for(s in states) {
+    tmp <- cbind(tmp, logscore(to[,s] ~ pred[,s]))
+  }
+  colnames(tmp) <- states
+  tmp
+}
+
+sphscore_state <- function(to, pred, states = c("Boreal", "Mixed", "Pioneer", "Temperate")) {
+  tmp <- c()
+  for(s in states) {
+    tmp <- cbind(tmp, sphscore(to[,s] ~ pred[,s]))
+  }
+  colnames(tmp) <- states
+  tmp
+}
+
+
+
+#### EFRON PSEUDO R2 (OLS) ####
+
+efron_r2 <- function(to, pred) {
+  (1 - (colSums((to - pred)^2))/(colSums((to - colMeans(to))^2)))
+}
+
+
+plot_score <- function(score_ls, ylab = "Score", 
+                       mod_names = c("Baseline", "Climate", "Soil", "Disturbances", "Full"),
+                       states = c("Boreal", "Mixed", "Pioneer", "Temperate"),
+                       col_mod = c("grey55", "#FDAE61", "#68340e", "#D7191C",  "#780a56"),
+                       srt = 0, stats = NULL, ylim = NULL, lwd = 1.3,
+                       text.width = 1.9,...) 
+  {
+  
+  ord <- order(colMeans(score_ls[["cv_msm_glb"]]), decreasing = T)
+  ord_mod <- order(unlist(lapply(score_ls, mean)), decreasing = T)
+  
+  nst <- length(states)
+  if(is.null(ylim)) ylim = range(score_ls)
+  
+  plot0(xlim = c(1, nst), ylim = ylim, grid.col = "grey85", ...)
+  axis(2, tick = F, line = -1, las = 1, cex.axis = .8)
+  mtext(ylab, 2, line = 1.5, cex = .95)
+  for(cv in 1:length(score_ls)) {
+    avg <- colMeans(score_ls[[cv]])[ord]
+    sdev <- apply(score_ls[[cv]], 2, sd)[ord]
+    
+    points(avg, type = "b", pch = 21, 
+           col = col_mod[cv], bg = alpha(col_mod[cv],.5), 
+           cex = .9, lwd = lwd)
+    arrows(1:nst, avg-sdev, 1:nst, avg+sdev, length=0, col = col_mod[cv], lwd = lwd)
+  }
+  myusr <- par("usr")
+  if(srt!=0) { adj = 1 ; pos = NULL } else { adj = NULL ; pos = 1}
+  text(1:nst, myusr[3], states[ord], cex = 0.9, xpd = NA, adj = adj, pos = pos, srt = srt)
+  
+  lgd=legend("topright", legend = mod_names[ord_mod], 
+             pch = 21, col = col_mod[ord_mod], pt.bg = alpha(col_mod[ord_mod],.5), pt.cex = .9,
+             lwd = lwd, cex = .75, bg = alpha("white", .8), box.lwd = 0, box.col="white",
+             text.width = text.width)
+
+if(!is.null(stats)) {
+  text(x = lgd$text$x+.6*lgd$rect$w, y = lgd$text$y, 
+         labels = format(stats[ord_mod],3), cex = .75, bty = "n", xpd = NA)
+}
+  
+}

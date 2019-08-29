@@ -29,9 +29,7 @@ make_forms <- function(covar, covar_p = NULL) {
 
 ### FAST TRANSITION DATA ####
 to_trans <- function(data, covar_names = NULL) {
-  
-  if(is.null(covar_names)) covar_names = c("sTP", "CMI", "TYPEHUMUS",  "natural", "logging")
-  
+
   states_trans <- data %>% 
     rename(year1 = year_measured, from = states) %>%
     select(plot_id, year1, from, covar_names) %>% data.table()
@@ -57,7 +55,7 @@ kfold <- function(strata, k = 10, id) {
   fold <- lapply(fold, function(x) id[x])
 }
 
-### CHECK CAOVARIATE DISTRIBUTION IN FOLD ####
+### CHECK COVARIATE DISTRIBUTION IN FOLD ####
 check_fold <- function(fold, data, data_trans) {
   covar_names <- c("sTP", "CMI", "TYPEHUMUS",  "natural", "logging")
   valid <- data %>% filter(plot_id %in% fold)
@@ -75,39 +73,52 @@ check_fold <- function(fold, data, data_trans) {
 
 
 ### CROSS VALIDATION OF MSM ####
-cv_msm <- function(data, fold, Q, covar_form, covar_names) {
+cv_msm <- function(data, fold, Q, covar_form, covar_names, covinits = NULL) {
   cv_res <- list()
   for(i in names(fold)){
-    train <- data %>% filter(!(plot_id %in% fold[[i]])) #Set the training set
-    validation <- data %>% filter(plot_id %in% fold[[i]]) #Set the validation set
+    print(paste("Cross validation of", i))
+    train <- data %>% filter(!(plot_id %in% fold[[i]])) #training set
+    validation <- data %>% filter(plot_id %in% fold[[i]]) #validation set
     
     #fit model on the train data
-    msm_train <- msm(states_num ~ year_measured, subject = plot_id, data = train,
+    msm_train <- msm(states_num ~ year_measured, 
+                     subject = plot_id, 
+                     data = train,
                      qmatrix = Q, 
                      gen.inits = TRUE,
                      obstype = 1, 
-                     control = list(trace=1, maxit=5000, fnscale = nrow(train)),
-                     opt.method = "optim", 
-                     covariates = covar_form) 
+                     control = list(trace=1, 
+                                    maxit=5000, 
+                                    fnscale = nrow(train)-5000),
+                     opt.method = "optim",
+                     covariates = covar_form, 
+                     covinits = covinits) 
     
     if(is.null(msm_train$covmat)) {
-      stop(paste(i, "Optimisation has probably not converged to the maximum likelihood - Hessian is not positive definite."))
-    }
-    
-    valid_trans <- to_trans(validation)
-    
-    if(is.null(covar_names)) { 
-      covariates <- NULL
+      print(paste(i, "Optimisation has probably not converged to the maximum likelihood - Hessian is not positive definite."))
+      
+      cv_res[[i]] <- list(msm_train = msm_train,
+                          pred_valid = NULL)
     } else {
-      covariates <- valid_trans[,covar_names]
+      valid_trans <- to_trans(validation, covar_names = covar_names)
+      
+      if(is.null(covar_names)) { 
+        covariates <- NULL
+      } else {
+        covariates <- valid_trans[covar_names]
+      }
+      
+      p_tmp <- msm_pred(mod = msm_train, 
+                        covariates = covariates, 
+                        t = valid_trans$t, from = valid_trans$from)
+      
+      
+      cv_res[[i]] <- list(msm_train = msm_train,
+                          pred_valid = cbind.data.frame(plot_id = valid_trans$plot_id,
+                                                        from = valid_trans$from, 
+                                                        to = valid_trans$to, p_tmp))
     }
     
-    p_tmp <- msm_pred(mod = msm_train, 
-                      covariates = covariates, 
-                      t = valid_trans$t, from = valid_trans$from)
-    
-    
-    cv_res[[i]] <- cbind.data.frame(from = valid_trans$from, to = valid_trans$to, p_tmp)
   }
   
   return(cv_res)
