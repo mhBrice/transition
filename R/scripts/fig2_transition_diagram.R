@@ -10,7 +10,7 @@ library(sf)
 
 ### DATA ####
 
-source('R/scripts/3_prep_trans.R')
+source('R/functions/prep_data.R')
 
 
 (trans_nb <- statetable.msm(states_num, plot_id, data = states_ba))

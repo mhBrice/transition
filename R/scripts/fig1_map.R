@@ -10,7 +10,7 @@ source('R/functions/plot_map.R')
 
 ### DATA ####
 
-source('R/scripts/3_prep_trans.R')
+source('R/functions/prep_data.R')
 
 reg_title <- c("Sugar maple-hickory &\nSugar maple-basswood",
                "Sugar maple-yellow birch",

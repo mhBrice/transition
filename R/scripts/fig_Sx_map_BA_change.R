@@ -10,7 +10,7 @@ source('R/functions/plot_map.R')
 
 ### DATA ####
 
-source('R/scripts/3_prep_trans.R')
+source('R/functions/prep_data.R')
 
 # Compute change in basal area for Boreal and Temperate species ####
 

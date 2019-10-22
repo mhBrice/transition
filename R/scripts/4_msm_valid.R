@@ -18,11 +18,11 @@ source('R/functions/multistate_performance.R')
 
 ### DATA ####
 
-source('R/scripts/3_prep_trans.R')
+source('R/functions/prep_data.R')
 
 # Load complete msm results
 
-load("res/msm_all75_drainph.rda")
+load("res/msm_all75.rda")
 msm_glb <- msm_all75$msm_glb
 
 # Load cross validated msm results

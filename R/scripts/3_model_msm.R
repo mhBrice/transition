@@ -13,7 +13,7 @@ source("R/functions/cross_validation.R")
 
 ### DATA ####
 
-source('R/scripts/3_prep_trans.R')
+source('R/functions/prep_data.R')
 
 
 (st_table <- statetable.msm(states_num, plot_id, data = states_ba))
@@ -167,7 +167,7 @@ msm_all75 <- list(msm0 = msm0,
                 msm_s = msm_s, 
                 msm_d = msm_d, 
                 msm_glb = msm_glb)
-save(msm_all75, file = "res/msm_all75_drainph.rda")
+save(msm_all75, file = "res/msm_all75.rda")
 
 ### Save all cv models ####
 cv_msm_all75 <- list(cv_msm0 = cv_msm0, 

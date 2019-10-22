@@ -10,11 +10,11 @@ library(kableExtra)
 
 ### DATA ####
 
-source('R/scripts/3_prep_trans.R')
+source('R/scripts/prep_data.R')
 
 # Load msm results
 
-load("res/msm_all75_drainph.rda")
+load("res/msm_all75.rda")
 
 msm_glb <- msm_all75[["msm_glb"]]
 
