@@ -87,12 +87,13 @@ succession <- function(pmat, jump) {
   # turnover
   turn_time <- 1/p_replaceof
   
-  # convergence - Damping ratio
+  # convergence - Damping ratio = decay constant
   eig <- eigen_left(pmat)
   damping <- eig$values[1]/eig$values[2]
   
   # half life to steady state
   halflife = log(2)/log(damping)
+  #life_to_0.01 = log(100)/log(damping) #life to 1/100
   
   # Steady state
   pi <- t(eig$vectors[,1])

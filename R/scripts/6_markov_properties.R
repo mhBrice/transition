@@ -4,13 +4,15 @@
 library(msm)
 library(graphicsutils)
 library(scales)
+library(dplyr)
+library(sf)
 
 source('R/functions/markov.R')
 source('R/functions/plot_msm.R')
 
 ### DATA ####
 
-source('R/scripts/prep_trans.R')
+source('R/scripts/3_prep_trans.R')
 
 # Load msm results
 

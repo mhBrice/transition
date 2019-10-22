@@ -20,13 +20,32 @@ load("res/msm_all75_drainph.rda")
 msm_glb <- msm_all75[["msm_glb"]]
 
 ### Estimated ratio of transition intensities
-x = covar_nat[[2]]
-unique(states_ba$DRAIN)
-x$DRAIN = -1.1915525
-qratio.msm(msm_glb, ind1 = c(2,4), ind2 = c(4,2), covariates =x)
-qratio.msm(msm_glb, ind1 = c(3,1), ind2 = c(1,3))
-qratio.msm(msm_glb, ind1 = c(1,2), ind2 = c(2,1), covariates = x)
-0.0237933/0.0139635
+envmean <- aggregate(states_ba[,c("sTP", "CMI", "DRAIN", "PH_HUMUS")], 
+                     by = list(states_ba$ecoreg3), mean)
+mixed_mean <- envmean[3,-1]
+
+covar_nat <- list(c(mixed_mean), 
+                  c(natural1 = 1, mixed_mean),
+                  c(natural2 = 1, mixed_mean))
+
+covar_log <- list(c(mixed_mean), 
+                  c(logging1 = 1, mixed_mean),
+                  c(logging2 = 1, mixed_mean))
+
+qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2), covariates = mixed_mean)
+qratio.msm(msm_glb, ind1 = c(2,3), ind2 = c(3,2), covariates = mixed_mean)
+qratio.msm(msm_glb, ind1 = c(2,4), ind2 = c(4,2), covariates = mixed_mean)
+
+###
+qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(2,4)) # M-B << M-T
+###
+qratio.msm(msm_glb, ind1 = c(4,2), ind2 = c(2,1)) # T-M >> B-M
+
+qratio.msm(msm_glb, ind1 = c(1,3), ind2 = c(3,1))
+qratio.msm(msm_glb, ind1 = c(1,2), ind2 = c(2,1))
+qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2))
+
+##barplot??
 
 ### PLOT COEFFICIENTS BEST MODEL ####
 
@@ -35,7 +54,7 @@ varnames <- c("Temperature", "CMI",
               "Natural 1", "Natural 2", 
               "Logging 1", "Logging 2")
 
-pdf("res/fig2_HR.pdf",
+pdf("res/fig3_HR.pdf",
     width = 7, height = 6)
 #quartz(width = 7, height = 6)
 plot_risk(msm_glb, varnames = varnames)
@@ -59,17 +78,7 @@ prevalence.msm(msm_glb, times = c(10,25,40), covariates = 'population')
 aggregate(states_ba[,c("natural", "logging")], 
           by = list(states_ba$ecoreg3), table)
 
-envmean <- aggregate(states_ba[,c("sTP", "CMI", "DRAIN", "PH_HUMUS")], 
-                     by = list(states_ba$ecoreg3), mean)
-mixed_mean <- envmean[3,-1]
 
-covar_nat <- list(c(mixed_mean), 
-                  c(natural1 = 1, mixed_mean),
-                  c(natural2 = 1, mixed_mean))
-
-covar_log <- list(c(mixed_mean), 
-                  c(logging1 = 1, mixed_mean),
-                  c(logging2 = 1, mixed_mean))
 
 
 
@@ -116,4 +125,3 @@ plot0(text = "Time (Years)", font = 2, cex = 1.1)
 dev.off()
 
 
-prevalence.msm(msm_glb, times = c(0,10,20,30,40), ci = "none", plot = T)

@@ -5,7 +5,6 @@
 library(msm)
 library(dplyr)
 library(data.table)
-# library(caret)
 library(DescTools)
 
 ### FUNCTIONS ####
@@ -13,8 +12,6 @@ library(DescTools)
 source("R/functions/cross_validation.R")
 
 ### DATA ####
-# source('R/scripts/1_dataFormatting_env.R')
-# source('R/scripts/2_dataFormatting_transition.R')
 
 source('R/scripts/3_prep_trans.R')
 
@@ -154,9 +151,6 @@ msm_glb <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
                control = list(trace=1, maxit=5000, fnscale=28800),
                opt.method = "optim", 
                covariates = covariates_glb)
-hr <- hazard.msm(msm_glb)
-lhr <- lapply(hr, function(x) log(x[,"HR"]))
-lhr <- lapply(lhr, function(x) x[x!=0])
 
 cv_msm_glb <- cv_msm(data = states_ba, fold = fold, Q = Q, 
                    covar_form = covariates_glb, 

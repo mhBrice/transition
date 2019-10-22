@@ -81,7 +81,8 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
            length = 0, col = "grey65", lwd = 1.5, xpd = NA)
     
     # points
-    points(tmp$HR, pch = 21, bg = as.character(tmp$col_pt), col = as.character(tmp$col_pt))
+    points(tmp$HR, pch = 19, 
+           col = as.character(tmp$col_pt), cex = 1.4)
     
     # axis
     if(logy) {
