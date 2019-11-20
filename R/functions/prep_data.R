@@ -11,7 +11,14 @@ states_ba <- readRDS("data/states_envba.RDS") %>% arrange(plot_id, year_measured
 
 states_ba <- states_ba %>% 
   mutate(year_measured = year_measured - 1970) %>% 
-  mutate_at(vars("sTP", "CMI", "DRAIN", "PH_HUMUS"), scale)
+  select(ID_PE:states_num90, 
+         "sTP", "sCMI", 
+         "natural", "logging", 
+         "DRAIN","PH_HUMUS", "ecoreg3", "ecoreg6") %>% 
+  na.omit() %>%
+  group_by(ID_PE) %>% filter(n() > 1) %>% ungroup() %>% 
+  mutate_at(vars("sTP", "sCMI", "DRAIN", "PH_HUMUS"), scale) %>%
+  mutate_at(vars(logging:natural), factor)
 
 sc_sTP <- c(attr(states_ba$sTP, "scaled:center"), attr(states_ba$sTP, "scaled:scale"))
 
@@ -35,7 +42,7 @@ ecoregion$SOUS_DOM6 <- factor(ecoregion$SOUS_DOM6, c("Sugar maple-bitternut hick
                                                      "Spruce-moss"))
 
 # COORDINATES
-xy <- st_read("data/plot_xy32198_may2018.gpkg") %>%
+xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>%
   st_transform(st_crs(ecoregion)) %>% 
-  filter(plot_id %in% states_ba$plot_id)
+  filter(ID_PE %in% states_ba$ID_PE)
 

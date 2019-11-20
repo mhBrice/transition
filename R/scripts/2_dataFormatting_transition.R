@@ -7,8 +7,7 @@ require(reshape2)
 ### DATA ####
 
 # Species
-sp_mat <- readRDS("data/sp_mat_abun_jul2018.RDS")
-sp_ba <- readRDS("data/sp_mat_ba_jul2018.RDS")
+sp_ba <- readRDS("data/sp_mat_ba_nov2019.RDS")
 
 # Environmental data
 env_all <- readRDS("data/env_all.RDS")
@@ -52,7 +51,7 @@ pioneer <- c("BETPAP", "BETPOP",
 
 temperate <- c("ACENEG", "ACENIG", "ACEPEN", "ACERIN", "ACERUB", "ACESAC", "ACESPI", 
                "AMESP", "BETALL",
-               "CARCAR", "CARCOR", "CAROVA", "FAGGRA", 
+               "CARCAR", "CARCOR", "FAGGRA", 
                "FRAAME", "FRANIG", "FRAPEN", 
                "JUGCIN", "OSTVIR",
                "PICRUB", "PINRES", "PINRIG", "PINSTR",
@@ -63,6 +62,8 @@ temperate <- c("ACENEG", "ACENIG", "ACEPEN", "ACERIN", "ACERUB", "ACESAC", "ACES
 
 boreal <- c("ABIBAL", "LARLAR", "PICGLA", "PICMAR", "PINBAN")
 
+c(pioneer,temperate,boreal) %in% MySpecies
+MySpecies %in% c(pioneer,temperate,boreal) 
 
 ### DEFINING STATES BASED ON DOMINANT SPECIES GROUP ####
 #"Conifer- dominated cover types (>75% conifer, based on canopy coverage), which were labelled as “softwood”, “swamp softwood”, or “black spruce” on the 1930 map, were merged here into the “conifer” type. The 1930 map also included “deciduous” (>75% deciduous), “mixed” (>25% of both deciduous and conifers), and “no cover” (recently disturbed and naturally nonwooded areas) cover types." (Boucher et al 2006)
@@ -122,7 +123,7 @@ states_envba <- states_ba %>%
 
 states_envba <- states_envba %>% 
   select(ID_PE:states_num90, 
-         "sTP", "CMI",
+         "sTP", "sCMI", 
          "natural", "logging", 
          "DRAIN","PH_HUMUS", "ecoreg3", "ecoreg6") %>% 
   na.omit() %>% 

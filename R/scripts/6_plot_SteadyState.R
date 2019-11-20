@@ -5,6 +5,7 @@ library(graphicsutils)
 library(dplyr)
 library(msm)
 library(sf)
+library(scales)
 
 ### FUNCTIONS ####
 
@@ -22,102 +23,97 @@ load("res/msm_all75.rda")
 msm_glb <- msm_all75[["msm_glb"]]
 
 ### 
-envmean <- aggregate(states_ba[,c("CMI", "DRAIN", "PH_HUMUS")], 
-                     by = list(states_ba$ecoreg3), mean)
-mixed_mean <- envmean[3,-1]
+ll_mixed <- which(states_ba$ecoreg3=="Mixed")
+mixed_mean <- as.list(apply(states_ba[ll_mixed, 
+                                      c("sTP", "sCMI", "DRAIN", "PH_HUMUS")],
+                            2, mean))
 
-states_ba$ecoreg5 <- states_ba$ecoreg6
-levels(states_ba$ecoreg5) <- c("Sugar maple-basswood", 
-                               "Sugar maple-basswood",
-                               "Sugar maple-yellow birch",
-                               "Balsam fir-yellow birch",
-                               "Balsam fir-white birch",
-                               "Spruce-moss")
+tp_mixed <- quantile(states_ba$sTP[ll_mixed], c(.2,.8))
 
-tp_ecoreg_min <- aggregate(states_ba$sTP, 
-                       by = list(states_ba$ecoreg5), function(x) quantile(x, .25))
-tp_ecoreg_max <- aggregate(states_ba$sTP, 
-                           by = list(states_ba$ecoreg5), function(x) quantile(x, .75))
-tp_ecoreg <- cbind(tp_ecoreg_min[,2], tp_ecoreg_max[,2])
 
-reg_title <- c("Sugar maple-hickory & \nSugar maple-basswood",
-               "Sugar maple-yellow birch",
-               "Balsam fir-yellow birch",
-               "Balsam fir-white birch", 
-               "Spruce-moss")
-
-col_reg = c("#D53E4F", "#FC8D59", "#FEE08B", "#99D594", "#3288BD")
-
-### Covariates ####
-quantile(states_ba$sTP, c(.03,.97))
 tp_grad <- seq(-1.9, 1.6, len = 50)
 
-nat_level <- list(list(natural1 = 0, natural2 = 0), 
-                  list(natural1 = 1, natural2 = 0), 
-                  list(natural1 = 0, natural2 = 1))
-log_level <- list(list(logging1 = 0, logging2 = 0), 
-                  list(logging1 = 1, logging2 = 0), 
-                  list(logging1 = 0, logging2 = 1))
+dfl <- expand.grid(sTP = tp_grad, logging = c(0, 1, 2), 
+                  sCMI = mixed_mean[[2]],
+                  DRAIN = mixed_mean[[3]],
+                  PH_HUMUS = mixed_mean[[4]])
 
+dfn <- expand.grid(sTP = tp_grad, natural = c(0, 1, 2), 
+                   sCMI = mixed_mean[[2]],
+                   DRAIN = mixed_mean[[3]],
+                   PH_HUMUS = mixed_mean[[4]])
 
+init <- states_ba %>% 
+  group_by(ID_PE) %>% 
+  arrange(year_measured) %>% 
+  slice(1) %>% filter(year_measured<15)
+init <- table(states_ba$states_ba[states_ba$year_measured<10])
+init <- init/sum(init)
 
-covar_d <- list(c(mixed_mean), 
-                c(natural1 = 1, mixed_mean),
-                c(natural2 = 1, mixed_mean), 
-                c(logging1 = 1, mixed_mean),
-                c(logging2 = 1, mixed_mean))
+dn <- list(c(mixed_mean, natural1 = 0), 
+           c(mixed_mean, natural1 = 1), 
+           c(mixed_mean, logging1 = 1),
+           c(mixed_mean, natural2 = 1), 
+           c(mixed_mean, logging2 = 1))
+qmats <- lapply(dn, function(x)
+  qmatrix.msm(msm_glb, covariates = x, ci = "none"))
+
+SSn <- lapply(qmats, function(x) steady_state(qmat = x))
+SSn <- rbind(init, do.call(rbind, SSn))
+
+dl <- list(c(mixed_mean, logging1 = 0), 
+           c(mixed_mean, logging1 = 1), 
+           c(mixed_mean, logging2 = 1))
+qmats <- lapply(dl, function(x)
+  qmatrix.msm(msm_glb, covariates = x, ci = "none"))
+
+SSl <- lapply(qmats, function(x) steady_state(qmat = x))
+SSl <- rbind(init, do.call(rbind, SSl))
 
 
 ### STEADY STATE ALONG TP GRADIENT ####
 
-mat <- matrix(c(4,4,1:2,3,3), 2)
 
-pdf("res/fig4_SS_gradient.pdf", width = 6, height = 5.5)
-#quartz(width = 6, height = 5.5)
-layout(mat, widths = c(0.06, 1, .5))
-par(mar = c(1,2,1.5,0), oma = c(2,0,0,0))
+mat <- matrix(c(4,4,4,5,1:3,5), 4)
 
+pdf("res/fig6_steady.pdf", width = 3.6, height = 7)
+#quartz(width = 3.6, height = 7.2)
+layout(mat, widths = c(0.08, 1), heights = c(1,1,1,0.2))
+par(mar = c(2,2.2,1,0.2), oma = c(0,0,0.1,0))
+
+barplot_index(index = SSn, ylim = c(0,1))
+mtext(letters[1], 3, adj = -.17)
 # Steady state for natural disturbances
-plot_SS_change(mod = msm_glb, 
-               other_covar = mixed_mean, 
-               d_grad = nat_level, 
-               tp_grad = tp_grad, 
-               xlab = NULL, ylab = NULL, main = "Natural", axes = 2,
-               unscale = sc_sTP, tp_ecoreg = tp_ecoreg)
-
-
+x=plot_SS_change(mod = msm_glb, df = dfn, tp_mixed = tp_mixed, 
+               dist = "natural",
+               unscale = sc_sTP, axes = 2, 
+               xlab = NULL, ylab = NULL, main = "Natural")
+mtext(letters[2], 3, adj = -.17)
 
 # Steady state for logging
-plot_SS_change(mod = msm_glb, 
-               other_covar = mixed_mean, 
-               d_grad = log_level, 
-               tp_grad = tp_grad, 
+x=plot_SS_change(mod = msm_glb, df = dfl, tp_mixed = tp_mixed, 
+               dist = "logging",
+               unscale = sc_sTP,
                ylab = NULL, xlab = "Mean temperature of the growing season",
-               main = "Logging",
-               unscale = sc_sTP, tp_ecoreg = tp_ecoreg)
+               main = "Logging")
+mtext(letters[3], 3, adj = -.17)
 
-
-# Legend
-par(mar = c(7,0,7,0))
-plot0(xaxs="i")
-legend(-1,.5, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
-       pch = 21, col = "black", pt.bg = c("white", "grey55", "black"), 
-       pt.cex = 2, pt.lwd = 1,
-       lty = 1:3, lwd = 1.5,
-       xpd = NA, bty = "n", xjust = -.1, yjust = .5, seg.len = 2.5)
-legend(-1, 0, legend = c("Boreal", "Temperate + Mixed"), cex = 1.1,
-       col = st_col[c(1,4)], lwd = 1.5,
-       xpd = NA, bty = "n", yjust = .5, seg.len = 2.5)
-legend(-1,-.7, legend = rev(reg_title), cex = 1.1,
-       col = rev(col_reg), lwd = 2.5,
-       xpd = NA, bty = "n", yjust = .5, seg.len = 2.5)
 
 # Axis
 par(mar = c(1,0,1.5,0))
 plot0()
-text(0,0, labels = "State proportion at equilibrium", srt = 90, cex= 1.4, xpd = NA)
+mtext("State proportion at equilibrium", 2, line = -2, cex =.85)
+
+# Legend
+par(mar = c(0,2.2,0,0.2))
+plot0()
+legend("bottom", legend = c("Minor", "Moderate", "Major"), cex = 1.1,
+       col = c("grey75","grey45","grey15"), lty = 1:3, lwd = 1.5, 
+       seg.len = 2, x.intersp = 0.9,
+       horiz = TRUE, bty = "n")
 
 dev.off()
+
 
 ### SUPP - STEADY STATE ALONG TP GRADIENT + DISTURBANCE GRADIENT ####
 
@@ -215,44 +211,40 @@ dev.off()
 
 
 ### MARKOV METRICS #####
-
-index_res <- index_gradient(mod = msm_glb, covar_d = covar_d, tp_grad = tp_grad)
-
-# Find min and max
-# tp_grad[which.max(index_res$halflife_df[,1])]  * sc_sTP[2] + sc_sTP[1]
+transients_log <- index_gradient(mod = msm_glb, df = dfl)
+transients_nat <- index_gradient(mod = msm_glb, df = dfn)
 
 
 # Layout matrix
 mat <- matrix(c(1:8),4)
 mat <- rbind(mat, c(9,9))
-mat <- cbind(mat, c(0, 10,11,0, 0))
 
-pdf("res/fig7_index_gradient.pdf", width = 6.7, height = 6.8)
-#quartz(width = 6.7, height = 6.8)
-layout(mat, heights = c(.12,1,1,1,.14), widths = c(1,1,0.8))
-par(oma = c(0,2,0,0))
+pdf("res/fig7_transients.pdf", width = 5.5, height = 6.8)
+#quartz(width = 5.5, height = 6.8)
+layout(mat, heights = c(.12,1,1,1,.21), widths = c(1,1))
+par(oma = c(0,2.2,0,0))
 
 # Metrics for natural disturbances
 par(mar = c(0,.5,0,.3))
 plot0(text = "Natural", cex = 1.2, font = 2, xpd = NA)
 
 par(mar = c(1,1,.1,.3))
-plot_index_gradient(index = index_res$soj_df[,1:3], tp_grad = tp_grad, 
-                    ylab = "Turnover time (y)", 
-                    unscale = sc_sTP,axes = 2, ylim = c(0,370),
-                    tp_ecoreg = tp_ecoreg)
+plot_transients(index = matrix(transients_nat$soj_comm, ncol = 3), 
+                tp_grad = tp_grad, tp_mixed = tp_mixed, 
+                ylab = "Turnover time (y)", 
+                unscale = sc_sTP, axes = 2, ylim = c(0,350))
 mtext("a", 3, adj = .97, line = -1.2, cex = 0.9)
 
-plot_index_gradient(index = index_res$entropy_df[,1:3], tp_grad = tp_grad, 
-                    ylab = "Entropy", 
-                    unscale = sc_sTP, axes = 2, ylim = c(0,.9), 
-                    tp_ecoreg = tp_ecoreg)
+plot_transients(index = matrix(transients_nat$entropy_comm, ncol = 3), 
+                tp_grad = tp_grad, tp_mixed = tp_mixed,
+                ylab = "Entropy", 
+                unscale = sc_sTP, axes = 2, ylim = c(0,.9))
 mtext("c", 3, adj = .97, line = -1.2, cex = 0.9)
 
-plot_index_gradient(index = index_res$halflife_df[,1:3], tp_grad = tp_grad, 
-                    ylab = "Half-life to equilibrium (y)",
-                    unscale = sc_sTP, ylim = c(0,160), 
-                    tp_ecoreg = tp_ecoreg)
+plot_transients(index = matrix(transients_nat$halflife, ncol = 3), 
+                tp_grad = tp_grad, tp_mixed = tp_mixed,
+                ylab = "Half-life to equilibrium (y)",
+                unscale = sc_sTP, ylim = c(0,180))
 mtext("e", 3, adj = .97, line = -1.2, cex = 0.9)
 
 # Metrics for logging
@@ -260,35 +252,30 @@ par(mar = c(0,.5,0,.3))
 plot0(text = "Logging", cex = 1.2, font = 2, xpd = NA)
 
 par(mar = c(1,1,.1,.3))
-plot_index_gradient(index = index_res$soj_df[,c(1,4,5)], tp_grad = tp_grad, 
-                    axes = NULL,
-                    unscale = sc_sTP, ylim = c(0,370), 
-                    tp_ecoreg = tp_ecoreg)
+plot_transients(index = matrix(transients_log$soj_comm, ncol = 3), 
+                tp_grad = tp_grad, tp_mixed = tp_mixed, 
+                axes = NULL,
+                unscale = sc_sTP, ylim = c(0,350))
 mtext("b", 3, adj = .97, line = -1.2, cex = 0.9)
 
-plot_index_gradient(index = index_res$entropy_df[,c(1,4,5)], tp_grad = tp_grad, 
-                    unscale = sc_sTP, axes = NULL, ylim = c(0,.9), 
-                    tp_ecoreg = tp_ecoreg)
+plot_transients(index = matrix(transients_log$entropy_comm, ncol = 3), 
+                tp_grad = tp_grad, tp_mixed = tp_mixed,
+                unscale = sc_sTP, axes = NULL, ylim = c(0,.9))
 mtext("d", 3, adj = .97, line = -1.2, cex = 0.9)
 
-plot_index_gradient(index = index_res$halflife_df[,c(1,4,5)], tp_grad = tp_grad, 
-                    axes = 1,
-                    unscale = sc_sTP,  ylim = c(0,160), 
-                    tp_ecoreg = tp_ecoreg)
+plot_transients(index = matrix(transients_log$halflife, ncol = 3), 
+                tp_grad = tp_grad, tp_mixed = tp_mixed,
+                axes = 1,
+                unscale = sc_sTP,  ylim = c(0,180))
 mtext("f", 3, adj = .97, line = -1.2, cex = 0.9)
 
 par(mar = c(.1,.5,.7,.5))
-plot0(text = "Mean temperature of the growing season", cex = 1.2)
+plot0()
+mtext("Mean temperature of the growing season", 3, line = -1, cex = 0.9)
 
-par(mar = c(1,.1,.1,0.1))
-plot0(xaxs = "i")
-legend(-1.1, 0, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
-       col = "black", 
+legend("bottom", legend = c("Minor", "Moderate", "Major"), cex = 1.15,
+       col = "black", horiz = TRUE, inset = c(0,-.2),
        lty = 1:3, lwd = 1.4,
-       xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
-plot0(xaxs = "i")
-legend(-1.1, 0, legend = rev(reg_title), cex = 1.1,
-       col = rev(col_reg), lwd = 2.2,
        xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
 
 dev.off()
@@ -301,14 +288,12 @@ dev.off()
 # Layout matrix
 mat <- matrix(c(1:10), 5)
 mat <- rbind(mat, c(11, 11))
-mat <- cbind(mat, c(0,0, 12,13,0, 0))
 
 
-pdf("res/figSupp_contrib2turnover.pdf", width = 6.7, height = 6.8)
-#quartz(width = 6.7, height = 6.8)
+pdf("res/figSupp_contrib2turnover.pdf", width = 5.5, height = 6.8)
+#quartz(width = 5.5, height = 6.8)
 par(oma = c(0,2,0,0))
-layout(mat, heights = c(.12,1,1,1,1,.15), widths = c(1,1,0.8))
-
+layout(mat, heights = c(.12,1,1,1,1,.25))
 
 # Metrics for natural disturbances
 par(mar = c(0,.5,0,.3))
@@ -319,15 +304,16 @@ par(mar = c(1,1,.1,.3))
 for(s in 1:4) {
   axes = 2
   if(s==1) ylim = c(0, 350)
-  if(s %in% c(2,3)) ylim = c(0, 100) 
+  if(s==2) ylim = c(0, 100)
+  if(s==3) ylim = c(0, 200) 
   if(s==4) { 
     ylim = c(0, 200) 
     axes = c(1, 2) 
     }
-  plot_index_gradient(index = do.call(cbind, lapply(index_res$soj_st_ls[c(1:3)], function(x) as.numeric(x[,s]))), tp_grad = tp_grad, 
+  plot_transients(index = matrix(transients_nat$soj_st_contrib[s,], ncol = 3), 
+                  tp_grad = tp_grad, tp_mixed = tp_mixed,
                       main = states[s],
-                      unscale = sc_sTP, axes = axes, ylim = ylim,
-                      tp_ecoreg = tp_ecoreg)
+                      unscale = sc_sTP, axes = axes, ylim = ylim)
 }
 mtext("State contribution to turnover time", 2, outer = T, line = .8, cex = .87)
 
@@ -339,30 +325,25 @@ par(mar = c(1,1,.1,.3))
 for(s in 1:4) {
   axes = 0
   if(s==1) ylim = c(0, 350)
-  if(s %in% c(2,3)) ylim = c(0, 100) 
+  if(s==2) ylim = c(0, 100)
+  if(s==3) ylim = c(0, 200)
   if(s==4) { 
     ylim = c(0, 200) 
     axes = 1
   }
-  plot_index_gradient(index = do.call(cbind, lapply(index_res$soj_st_ls[c(1,4,5)], function(x) as.numeric(x[,s]))), tp_grad = tp_grad,
-                      unscale = sc_sTP, axes = axes, ylim = ylim,
-                      tp_ecoreg = tp_ecoreg)
+  plot_transients(index = matrix(transients_log$soj_st_contrib[s,], ncol = 3),
+                      tp_grad = tp_grad, tp_mixed = tp_mixed,
+                      unscale = sc_sTP, axes = axes, ylim = ylim)
 }
 
 
-par(mar = c(.1,.5,.7,.5))
-plot0(text = "Mean temperature of the growing season", cex = 1.3, xpd = NA)
-
-par(mar = c(1,.1,.1,0.1))
-plot0(xaxs = "i")
-legend(-1.1, 0, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
-       col = "black", 
+par(mar = c(0,.5,0,.5))
+plot0()
+text(0, .25,"Mean temperature of the growing season", cex = 1.3, xpd = NA)
+legend(0, .1, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
+       col = "black", horiz = TRUE,
        lty = 1:3, lwd = 1.4,
-       xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
-plot0(xaxs = "i")
-legend(-1.1, 0, legend = rev(reg_title), cex = 1.1,
-       col = rev(col_reg), lwd = 2.2,
-       xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
+       xpd = NA, bty = "n", xjust = 0.5, seg.len = 2.2)
 
 dev.off()
 
@@ -370,11 +351,10 @@ dev.off()
 
 ### SUPPMAT - State ontribution to entropy ####
 
-pdf("res/figSupp_contrib2entropy.pdf", width = 6.7, height = 6.8)
-#quartz(width = 6.7, height = 6.8)
+pdf("res/figSupp_contrib2entropy.pdf", width = 5.5, height = 6.8)
+#quartz(width = 5.5, height = 6.8)
 par(oma = c(0,2,0,0))
-layout(mat, heights = c(.12,1,1,1,1,.15), widths = c(1,1,0.8))
-
+layout(mat, heights = c(.12,1,1,1,1,.25))
 
 # Metrics for natural disturbances
 par(mar = c(0,.5,0,.3))
@@ -386,10 +366,10 @@ for(s in 1:4) {
   axes = 2
   if(s==4) axes = c(1, 2) 
 
-  plot_index_gradient(index = do.call(cbind, lapply(index_res$entropy_st_ls[c(1:3)], function(x) as.numeric(x[,s]))), tp_grad = tp_grad, 
-                      ylab = NULL, xlab = NULL, main = states[s],
-                      unscale = sc_sTP, axes = axes, ylim = c(0,1),
-                      tp_ecoreg = tp_ecoreg)
+  plot_transients(index = matrix(transients_nat$entropy_st_contrib[s,], ncol = 3), 
+                  tp_grad = tp_grad, tp_mixed = tp_mixed,
+                  main = states[s],
+                  unscale = sc_sTP, axes = axes, ylim = c(0,1))
 }
 mtext("State contribution to entropy", 2, outer = T, line = .8, cex = .87)
 
@@ -401,37 +381,20 @@ par(mar = c(1,1,.1,.3))
 for(s in 1:4) {
   axes = 0
   if(s==4) axes = 1
-  plot_index_gradient(index = do.call(cbind, lapply(index_res$entropy_st_ls[c(1,4,5)], function(x) as.numeric(x[,s]))), tp_grad = tp_grad, 
-                      ylab = NULL, xlab = NULL,
-                      unscale = sc_sTP, axes = axes, ylim = c(0,1),
-                      tp_ecoreg = tp_ecoreg)
+  plot_transients(index = matrix(transients_log$entropy_st_contrib[s,], ncol = 3),
+                  tp_grad = tp_grad, tp_mixed = tp_mixed,
+                  unscale = sc_sTP, axes = axes, ylim = c(0,1))
 }
 
 
-par(mar = c(.1,.5,.7,.5))
-plot0(text = "Mean temperature of the growing season", cex = 1.3, xpd = NA)
-
-par(mar = c(1,.1,.1,0.1))
-plot0(xaxs = "i")
-legend(-1.1, 0, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
-       col = "black", 
+par(mar = c(0,.5,0,.5))
+plot0()
+text(0, .25,"Mean temperature of the growing season", cex = 1.3, xpd = NA)
+legend(0, .1, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
+       col = "black", horiz = TRUE,
        lty = 1:3, lwd = 1.4,
-       xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
-plot0(xaxs = "i")
-legend(-1.1, 0, legend = rev(reg_title), cex = 1.1,
-       col = rev(col_reg), lwd = 2.2,
-       xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
+       xpd = NA, bty = "n", xjust = 0.5, seg.len = 2.2)
+
 
 dev.off()
 
-library(popdemo)
-
-p =pmatrix.msm(msm_glb, t = 1, covariates = c(covar_d[[1]], sTP = tp_grad[20]), ci = "none")
-class(p)="matrix"
-convt(p)
-
-dr(p, return.time=T)
-
-KeyfitzD(p, vector =c(.25,.25,.25,.25))
-
-         

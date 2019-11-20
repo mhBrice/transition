@@ -4,6 +4,9 @@
 library(graphicsutils)
 library(dplyr)
 library(msm)
+library(sf)
+library(knitr)
+library(kableExtra)
 
 ### FUNCTIONS ####
 
@@ -16,11 +19,12 @@ source('R/functions/prep_data.R')
 # Load msm results
 
 load("res/msm_all75.rda")
+msm_all <- msm_all75
+msm_glb <- msm_all[["msm_glb"]]
 
-msm_glb <- msm_all75[["msm_glb"]]
 
 ### Estimated ratio of transition intensities
-envmean <- aggregate(states_ba[,c("sTP", "CMI", "DRAIN", "PH_HUMUS")], 
+envmean <- aggregate(states_ba[,c("sTP", "sCMI", "DRAIN", "PH_HUMUS")], 
                      by = list(states_ba$ecoreg3), mean)
 mixed_mean <- envmean[3,-1]
 
@@ -32,20 +36,45 @@ covar_log <- list(c(mixed_mean),
                   c(logging1 = 1, mixed_mean),
                   c(logging2 = 1, mixed_mean))
 
-qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2), covariates = mixed_mean)
-qratio.msm(msm_glb, ind1 = c(2,3), ind2 = c(3,2), covariates = mixed_mean)
-qratio.msm(msm_glb, ind1 = c(2,4), ind2 = c(4,2), covariates = mixed_mean)
+# Probability matrix
+covar <- list(c(mixed_mean), 
+              c(natural1 = 1, mixed_mean),
+              c(natural2 = 1, mixed_mean), 
+              c(logging1 = 1, mixed_mean),
+              c(logging2 = 1, mixed_mean))
 
-###
-qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(2,4)) # M-B << M-T
-###
-qratio.msm(msm_glb, ind1 = c(4,2), ind2 = c(2,1)) # T-M >> B-M
+p_list <- lapply(covar, 
+                 function(x) pmatrix.msm(msm_glb, t=10, 
+                                         covariates = as.list(x), 
+                                         ci = "normal"))
 
-qratio.msm(msm_glb, ind1 = c(1,3), ind2 = c(3,1))
-qratio.msm(msm_glb, ind1 = c(1,2), ind2 = c(2,1))
-qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2))
 
-##barplot??
+### TABLE OF MODEL RESULTS ####
+
+
+stats_msm <- lapply(msm_all, 
+                    function(x) c("Covariates" = NA,
+                                  "Number of parameters" = x$paramdata$npars-length(x$fixedpars),
+                                  "-2 Log-likelihood" = round(x$minus2loglik,1), 
+                                  "Delta AIC" = round(AIC(x)-AIC(msm_all$msm_glb),1), 
+                                  "LR test" = NA)) %>%
+  do.call(rbind,.) %>% as.data.frame(.)
+
+rownames(stats_msm) <- c("Baseline", "Climate", "Soil", "Disturbances", "Full")
+
+stats_msm[,"Covariates"] <- c("Intercept",
+                              paste("Temperature,", "CMI"),
+                              paste("Drainage,", "pH"),
+                              paste("Natural,", "Logging"),
+                              "All")
+stats_msm <- stats_msm[order(stats_msm$`Delta AIC`, decreasing = TRUE),]
+stats_msm$`LR test` <- c("---", rep("< 0.001", 4))
+
+kable(stats_msm, format = "latex",
+      booktabs = T, linesep = "") %>% 
+  column_spec(1, bold = TRUE) %>% 
+  row_spec(c(0,5), bold = TRUE) 
+
 
 ### PLOT COEFFICIENTS BEST MODEL ####
 
@@ -54,33 +83,38 @@ varnames <- c("Temperature", "CMI",
               "Natural 1", "Natural 2", 
               "Logging 1", "Logging 2")
 
-pdf("res/fig3_HR.pdf",
+pdf("res/fig4_HR.pdf",
     width = 7, height = 6)
 #quartz(width = 7, height = 6)
 plot_risk(msm_glb, varnames = varnames)
 dev.off()
 
-# quartz(width = 4, height = 7)
-# plot_risk2(msm5, varnames = varnames)
 
 
-### PLOT INFLUENCE OF COVARIATE ON STEADY STATE ####
+### Plot transition matrix #####
 
+dist_title <- c("Minor", "Moderate natural", "Major natural", 
+                "Moderate logging", "Major logging")
 
+mat <- matrix(c(0,1,1,0,
+                2,2,4,4,
+                3,3,5,5),3,byrow = T)
 
-### PREVALENCE OF STATES THROUGH TIME ####
-
-prevalence.msm(msm_glb, times = c(10,25,40), covariates = 'population')
-
+pdf("res/fig5_pmatrix.pdf", width = 4.2, height = 6.2)
+#quartz(width = 4.2, height = 6.2)
+layout(mat)
+par(mar=c(.5,2,3.5,1))
+for(i in 1:length(p_list)) {
+  tr <- p_list[[i]]
+  tr <- tr[["estimates"]]
+  #dimnames(tr) <- list(states,states)
+  if(i == 1) labels = TRUE else labels = FALSE
+  plot_trans(pmat=tr, states_lab = c("B", "M", "P", "T"), 
+             labels = labels, main = dist_title[i])
+}
+dev.off()
 
 ### PLOT TRANSITION PROBABILITY ####
-
-aggregate(states_ba[,c("natural", "logging")], 
-          by = list(states_ba$ecoreg3), table)
-
-
-
-
 
 mat <- matrix(c(0:14,0,0,15,15,0), 5, 4)
 mat <- rbind(mat, c(0,16,16,0))

@@ -11,9 +11,9 @@ library(data.table)
 
 # Environmental
 
-env_data <- readRDS("data/env_data_may2018.RDS")
+env_data <- readRDS("data/env_data_nov2019.RDS")
 
-site_plantation <- env_data$ID_PE[which(env_data$ORIGINE2=="plantation")]
+site_plantation <- env_data$ID_PE[which(env_data$ORIGINE2 %in% c("plantation", "wasteland"))]
 
 env_data <- env_data %>%
   group_by(ID_PE) %>% arrange(year_measured) %>%
@@ -22,33 +22,39 @@ env_data <- env_data %>%
 
 # Ecoregion
 
-ecoreg_df <- readRDS("data/ecoreg_df.RDS") %>% filter(ID_PE %in% env_data$ID_PE)
+ecoreg_df <- readRDS("data/ecoreg_df_nov19.RDS") %>% 
+  filter(ID_PE %in% env_data$ID_PE)
 
 # Spatial
 
-xy <- st_read("data/plot_xy32198_may2018.gpkg") %>% filter(ID_PE %in% env_data$ID_PE)
+xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>% 
+  filter(ID_PE %in% env_data$ID_PE)
 st_crs(xy) <- 32198
 
 # Climate
 
 # 10-year average
-bioclim10 <- readRDS("data/bioclim10_mat.RDS") %>% 
-  filter(ID_PE %in% env_data$ID_PE)
-
+bioclim10 <- readRDS("data/bioclim_roll10_nov2019.RDS") %>% 
+  filter(ID_PE %in% env_data$ID_PE) %>% 
+  left_join(env_data[,1:4], by = c("ID_PE", "year" = "year_measured")) %>%
+  ungroup()
 
 ###########################
 ### FORMATTING CLIMATE ####
 ###########################
 # sg_15 <- mean temperature for period 3 (growing season)
-# sg_06 <- total precipitation for period 3 (growing season)
-# cmi <- climate moisture index
+# sg_12 <- Annual mean temperature
+# sg_03 <- number of days of the growing season
+# sg_06 <- total precipitation for period 3
+# cmi_sum <- annual climate moisture index
+# sum(cmi_05:cmi_09) <- climate moisture index for summer months
 
 # Join to other climate variables
 
 bioclim <- bioclim10 %>% 
-  select(ID_PE, ID_PE_MES, plot_id, year_measured,
-         sg_15, sg_06, cmi) %>%
-  rename(sTP = sg_15, sPP = sg_06, CMI = cmi)
+  mutate(sCMI = rowSums(select(., "cmi_05":"cmi_09"))) %>% 
+  select(ID_PE, ID_PE_MES, plot_id, year_measured = year,
+         sTP = sg_15, sCMI)
 
 
 ################################
@@ -85,8 +91,10 @@ env_data <- env_data %>% group_by(plot_id) %>%
 # Drainage
 
 env_data$DRAIN <- factor(env_data$CL_DRAI2,
-                          levels = c("excessif", "rapide", "bon", "modere",
-                                     "imparfait", "mauvais", "tres_mauvais", "complexe"),
+                          levels = c("excessif", "rapide", 
+                                     "bon", "modere",
+                                     "imparfait", "mauvais", 
+                                     "tres_mauvais", "complexe"),
                           ordered = T)
 levels(env_data$DRAIN) <- c("1","1", "2", "3","4","5","6","4")
 env_data$DRAIN <- as.numeric(env_data$DRAIN)
@@ -94,7 +102,8 @@ env_data$DRAIN <- as.numeric(env_data$DRAIN)
 
 # Humus
 env_data$TYPEHUMUS <- factor(env_data$TYPEHUMUS,
-                             levels = c("MU", "MD", "MR", "TO", "AN", "SO", "NA"))
+                             levels = c("MU", "MD", "MR", 
+                                        "TO", "AN", "SO", "NA"))
 
 env_data <- env_data %>% group_by(plot_id) %>%
   mutate_at(vars(TYPEHUMUS:CL_DRAI2, DRAIN), last) %>%

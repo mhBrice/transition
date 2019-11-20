@@ -10,7 +10,7 @@ library(latex2exp)
 source('R/functions/markov.R')
 ### DATA ####
 
-source('R/scripts/prep_data.R')
+source('R/functions/prep_data.R')
 
 # Load msm results
 
@@ -76,7 +76,8 @@ qratio.msm(msm_glb, ind1 = c(1,3), ind2 = c(3,1))
 qratio.msm(msm_glb, ind1 = c(1,2), ind2 = c(2,1))
 qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2))
 
-
+qmatrix.msm(msm_glb, covariates = list(natural1=1, DRAIN = -1.2032652))
+qmatrix.msm(msm_glb, covariates = list(natural1=1, DRAIN = 1.9743119))
 
 quartz()
 

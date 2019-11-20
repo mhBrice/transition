@@ -31,7 +31,7 @@ make_forms <- function(covar, covar_p = NULL) {
 to_trans <- function(data, covar_names = NULL) {
 
   states_trans <- data %>% 
-    rename(year1 = year_measured, from = states) %>%
+    rename(year1 = year_measured, from = states_ba) %>%
     select(plot_id, year1, from, covar_names) %>% data.table()
   
   cols = c("year1","from")
@@ -57,7 +57,7 @@ kfold <- function(strata, k = 10, id) {
 
 ### CHECK COVARIATE DISTRIBUTION IN FOLD ####
 check_fold <- function(fold, data, data_trans) {
-  covar_names <- c("sTP", "CMI", "TYPEHUMUS",  "natural", "logging")
+  covar_names <- c("sTP", "sCMI", "PH_HUMUS",  "natural", "logging")
   valid <- data %>% filter(plot_id %in% fold)
   var_summ <- summary(valid[,covar_names])
   

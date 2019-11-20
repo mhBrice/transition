@@ -7,6 +7,8 @@ library(graphicsutils)
 library(dplyr)
 library(diagram)
 library(sf)
+library(knitr)
+library(kableExtra)
 
 ### DATA ####
 
@@ -17,11 +19,14 @@ source('R/functions/prep_data.R')
 
 rownames(trans_nb) <- colnames(trans_nb) <- states
 
-kable(addmargins(trans_nb), format="markdown")
+
+kable(addmargins(trans_nb), format="latex", align = "c",booktabs = T, linesep = "") %>% 
+  column_spec(1, bold = TRUE) %>%
+  row_spec(0, bold = TRUE)
 
 
 
-(trans_perc <- t(round(trans_nb/rowSums(trans_nb)*100, 1)))
+s(trans_perc <- t(round(trans_nb/rowSums(trans_nb)*100, 1)))
 
 trans_perc[1,4] <- 0
 trans_perc[4,1] <- 0
