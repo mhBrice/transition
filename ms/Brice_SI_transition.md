@@ -248,6 +248,7 @@ Sum & 11383 & 6365 & 8475 & 5467 & 31690\\
 \end{tabular}
 
 
+
 \pagebreak
 \blandscape
 
@@ -282,7 +283,40 @@ Temperate - Temperate & -0.016\newline (-0.019, -0.013) & \cellcolor{white}{ } &
 \elandscape
 
 \pagebreak
+\blandscape
 
+**Table S5**. Table of baseline transition intensities and hazard ratios as estimated from a full multi-state model ran on forest states defined with a different threshold than in the main manuscript. Here, plots are assigned to Boreal or Temperate states using a threshold of >85% (instead of >75%) of species dominance of the plot basal area. See Table S5 for details about the interpretation of the table.
+
+\begin{table}[H]
+\setstretch{1.4}
+\centering\begingroup\fontsize{6.8}{8.8}\selectfont
+
+\begin{tabular}{>{\bfseries}l>{\centering\arraybackslash}p{1.9cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}}
+\toprule
+\textbf{Transitions} & \textbf{Baseline} & \textbf{Temperature} & \textbf{CMI} & \textbf{Drainage} & \textbf{pH} & \textbf{Natural1} & \textbf{Natural2} & \textbf{Logging1} & \textbf{Logging2}\\
+\midrule
+Boreal - Boreal & -0.009\newline (-0.01, -0.008) & \cellcolor{white}{ } & \cellcolor{white}{\cellcolor{white}{ }} & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ }\\
+Boreal - Mixed & 0.002\newline (0.001, 0.003) & \cellcolor[HTML]{cccccc}{5.29\newline (3.58, 7.83)} & \cellcolor{white}{\cellcolor{white}{1.01\newline (0.73, 1.39)}} & \cellcolor[HTML]{cccccc}{0.72\newline (0.62, 0.83)} & \cellcolor{white}{1.11\newline (0.94, 1.32)} & \cellcolor[HTML]{cccccc}{2.69\newline (1.92, 3.77)} & \cellcolor{white}{0.7\newline (0.05, 9.91)} & \cellcolor{white}{1.89\newline (0.87, 4.13)} & \cellcolor{white}{0.39\newline (0.01, 27.18)}\\
+Boreal - Pioneer & 0.007\newline (0.006, 0.008) & \cellcolor{white}{1.000} & \cellcolor{white}{\cellcolor{white}{1.000}} & \cellcolor{white}{1.000} & \cellcolor{white}{1.000} & \cellcolor[HTML]{cccccc}{4.61\newline (3.73, 5.68)} & \cellcolor[HTML]{cccccc}{37.5\newline (31, 45.38)} & \cellcolor[HTML]{cccccc}{8.81\newline (6.08, 12.77)} & \cellcolor[HTML]{cccccc}{197.37\newline (110.34, 353.04)}\\
+Mixed - Boreal & 0.002\newline (0.001, 0.004) & \cellcolor{white}{0.8\newline (0.41, 1.56)} & \cellcolor[HTML]{cccccc}{\cellcolor[HTML]{cccccc}{1.61\newline (1.1, 2.35)}} & \cellcolor{white}{1.08\newline (0.79, 1.48)} & \cellcolor{white}{0.69\newline (0.45, 1.07)} & \cellcolor{white}{0.88\newline (0.33, 2.33)} & \cellcolor{white}{1.19\newline (0.04, 38.52)} & \cellcolor{white}{1.05\newline (0.41, 2.68)} & \cellcolor{white}{0.76\newline (0, 201.91)}\\
+Mixed - Mixed & -0.021\newline (-0.024, -0.019) & \cellcolor{white}{ } & \cellcolor{white}{\cellcolor{white}{ }} & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ }\\
+Mixed - Pioneer & 0.005\newline (0.004, 0.006) & \cellcolor{white}{1.000} & \cellcolor{white}{\cellcolor{white}{1.000}} & \cellcolor{white}{1.000} & \cellcolor{white}{1.000} & \cellcolor[HTML]{cccccc}{3.2\newline (2.04, 5.04)} & \cellcolor[HTML]{cccccc}{12.6\newline (6.22, 25.5)} & \cellcolor[HTML]{cccccc}{2.7\newline (1.61, 4.54)} & \cellcolor[HTML]{cccccc}{46.45\newline (33.21, 64.97)}\\
+Mixed - Temperate & 0.015\newline (0.013, 0.017) & \cellcolor{white}{0.89\newline (0.71, 1.11)} & \cellcolor[HTML]{cccccc}{\cellcolor[HTML]{cccccc}{0.76\newline (0.66, 0.88)}} & \cellcolor{white}{1.02\newline (0.94, 1.12)} & \cellcolor{white}{0.95\newline (0.88, 1.02)} & \cellcolor[HTML]{cccccc}{2.38\newline (1.92, 2.96)} & \cellcolor[HTML]{cccccc}{3.07\newline (1.6, 5.88)} & \cellcolor[HTML]{cccccc}{3.14\newline (2.61, 3.78)} & \cellcolor[HTML]{cccccc}{4.71\newline (3.02, 7.34)}\\
+Pioneer - Boreal & 0.025\newline (0.023, 0.027) & \cellcolor[HTML]{cccccc}{1.21\newline (1.1, 1.33)} & \cellcolor[HTML]{cccccc}{\cellcolor[HTML]{cccccc}{1.8\newline (1.64, 1.96)}} & \cellcolor{white}{0.98\newline (0.94, 1.03)} & \cellcolor{white}{0.95\newline (0.9, 1.01)} & \cellcolor{white}{0.96\newline (0.78, 1.17)} & \cellcolor[HTML]{cccccc}{0.37\newline (0.28, 0.49)} & \cellcolor[HTML]{cccccc}{1.85\newline (1.5, 2.28)} & \cellcolor{white}{1.7\newline (0.94, 3.08)}\\
+Pioneer - Mixed & 0.005\newline (0.005, 0.006) & \cellcolor[HTML]{cccccc}{5.31\newline (4.29, 6.58)} & \cellcolor[HTML]{cccccc}{\cellcolor[HTML]{cccccc}{1.82\newline (1.55, 2.14)}} & \cellcolor[HTML]{cccccc}{0.89\newline (0.81, 0.98)} & \cellcolor{white}{0.99\newline (0.91, 1.08)} & \cellcolor{white}{1.13\newline (0.8, 1.59)} & \cellcolor[HTML]{cccccc}{0.48\newline (0.25, 0.9)} & \cellcolor[HTML]{cccccc}{2.42\newline (1.82, 3.21)} & \cellcolor{white}{0.8\newline (0.57, 1.12)}\\
+Pioneer - Pioneer & -0.031\newline (-0.033, -0.029) & \cellcolor{white}{ } & \cellcolor{white}{\cellcolor{white}{ }} & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ }\\
+Pioneer - Temperate & 0\newline (0, 0.001) & \cellcolor[HTML]{cccccc}{22.53\newline (14.08, 36.06)} & \cellcolor[HTML]{cccccc}{\cellcolor[HTML]{cccccc}{2.48\newline (1.82, 3.38)}} & \cellcolor[HTML]{cccccc}{0.7\newline (0.57, 0.85)} & \cellcolor{white}{1.04\newline (0.91, 1.2)} & \cellcolor{white}{0.1\newline (0, 5.96)} & \cellcolor{white}{0.57\newline (0.14, 2.31)} & \cellcolor{white}{1.05\newline (0.46, 2.38)} & \cellcolor{white}{0.34\newline (0.09, 1.28)}\\
+Temperate - Mixed & 0.017\newline (0.014, 0.021) & \cellcolor[HTML]{cccccc}{0.55\newline (0.42, 0.71)} & \cellcolor{white}{\cellcolor{white}{0.88\newline (0.76, 1.02)}} & \cellcolor[HTML]{cccccc}{1.35\newline (1.2, 1.52)} & \cellcolor[HTML]{cccccc}{0.79\newline (0.71, 0.87)} & \cellcolor[HTML]{cccccc}{1.78\newline (1.16, 2.74)} & \cellcolor{white}{1.61\newline (0.53, 4.91)} & \cellcolor[HTML]{cccccc}{1.32\newline (1.04, 1.67)} & \cellcolor[HTML]{cccccc}{4.35\newline (2.38, 7.93)}\\
+Temperate - Pioneer & 0.001\newline (0.001, 0.002) & \cellcolor{white}{1.000} & \cellcolor{white}{\cellcolor{white}{1.000}} & \cellcolor{white}{1.000} & \cellcolor{white}{1.000} & \cellcolor{white}{0.54\newline (0.01, 46.28)} & \cellcolor[HTML]{cccccc}{37.81\newline (13.25, 107.92)} & \cellcolor[HTML]{cccccc}{3.41\newline (1.76, 6.62)} & \cellcolor[HTML]{cccccc}{142.39\newline (85.95, 235.89)}\\
+Temperate - Temperate & -0.018\newline (-0.022, -0.015) & \cellcolor{white}{ } & \cellcolor{white}{\cellcolor{white}{ }} & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ } & \cellcolor{white}{ }\\
+\bottomrule
+\end{tabular}
+\endgroup{}
+\end{table}
+
+\elandscape
+
+\pagebreak
 
 
 # Supplementary figures

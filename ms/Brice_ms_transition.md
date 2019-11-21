@@ -48,8 +48,8 @@ Forest transition under climate change
 
 Several temperate tree species are expected to migrate northward and colonise
 boreal forests in response to climate change. Tree migrations could lead to
-transitions in forest types, and these could be facilitated by disturbances or
-hampered by unsuitable soil conditions.
+transitions in forest types, and these could be influenced by other non-climatic
+factors, such as disturbances and unsuitable soil conditions.
 
 Here, we model the state transition dynamics of Québec's forests in
 recent decades to identify the environmental conditions that promote or prevent
@@ -73,7 +73,7 @@ exerted only minor constraints. Moderate disturbances not only increased the
 probability of transition to pioneer, but also from mixed to temperate forests.
 At low disturbances, boreal forests were characterised by great inertia and
 predictable stand self-replacement dynamics, while mixed forests presented rapid
-and unpredictable transitions. Moderate disturbances reduced turnover and
+and uncertain transitions. Moderate disturbances reduced turnover and
 convergence times for all transitions and induced a clear directional shift
 toward temperate forests. In the long-term, these changes in the transition
 dynamics increase the equilibrium proportion of temperate forests, thus
@@ -98,26 +98,24 @@ Resilience
 
 # Introduction
 
-Global climate warming is forcing species to move their distribution
-[@parmesan_globally_2003]. Several temperate deciduous tree species at the
-temperate-boreal forest ecotone are slowly migrating northward, colonising
-conifer dominated forests [@fisichelli_temperate_2014;
-@evans_borealtemperate_2017; @boisvert-marsh_shifting_2014; @sittaro_tree_2017].
-As climate warms up and tips the balance in favour of temperate over boreal
-species, forests are expected to transition from coniferous to mixedwood and
-from mixedwood to temperate deciduous [@boulanger_climate_2019;
-@price_anticipating_2013]. While boreal forest dynamics is characterised by
-broad-scale disturbances (fires and insect outbreaks) and slow decomposition of
-an acidic and nutrient-poor litter, temperate forest dynamics is characterised
-by small-scale canopy gaps and rapid decomposition of a rich litter
-[@goldblum_deciduous_2010]. Hence, as ecological processes strongly differ among
-these biomes, climate-induced range shifts not only impact species
-distributions, but also alter the structure of communities, microclimates,
-biogeochemical cycles and ecosystem functioning and might trigger a "regime
-shift" [@scheffer_catastrophic_2001].
+Global climate warming has led several temperate deciduous tree species to
+slowly migrate northward, colonising conifer dominated forests
+[@fisichelli_temperate_2014; @evans_borealtemperate_2017;
+@boisvert-marsh_shifting_2014; @sittaro_tree_2017]. As climate warms up and tips
+the balance in favour of temperate over boreal species, forests at the ecotone
+are expected to transition from coniferous to mixedwood and from mixedwood to
+temperate deciduous [@boulanger_climate_2019; @price_anticipating_2013]. While
+boreal forest dynamics is characterised by broad-scale disturbances (fires and
+insect outbreaks) and slow decomposition of an acidic and nutrient-poor litter,
+temperate forest dynamics is characterised by small-scale canopy gaps and rapid
+decomposition of a rich litter [@goldblum_deciduous_2010]. As ecological
+processes strongly differ among these biomes, climate-induced range shifts not
+only impact species distributions, but also alter the structure of communities,
+microclimates, biogeochemical cycles and ecosystem functioning and might trigger
+a "regime shift" [@scheffer_catastrophic_2001].
 
 Climatic niches for tree species are expected to shift northward by several
-hundred kilometres by the end of the century [@mckenney_potential_2007], but
+hundred kilometres by the end of the century [@mckenney_potential_2007], however
 many studies indicate that tree migration will not keep pace with global warming
 [e.g. @zhu_failure_2012; @sittaro_tree_2017; @renwick_temporal_2015;
 @talluto_extinction_2017; @vissault_biogeographie_2016]. Indeed, warmer climate
@@ -133,36 +131,36 @@ of forest states. However, because trees are long-lived species that disperse
 over very short distances, immigration and extinction events in response to
 environmental changes are often delayed, and forests rarely reach their
 equilibrium [@talluto_extinction_2017]. If forests are undisturbed, transition
-rates between forest biomes will be mainly limited by the persistence and
+rates between forest types will be mainly limited by the persistence and
 turnover of resident species as well as the dispersal and establishment rates of
 migrating species [@neilson_transient_1993], resulting in transient dynamics
 that may last a very long time [@hastings_transient_2018;
-@jackson_balancing_2010; @talluto_extinction_2017]. While the study of
-equilibrium highlights the potential long-term attractor of forest dynamics,
-transient dynamics reveals the short-term response, which is more relevant to
-the changes likely to occur in the 21st century and within the time frame of
-management plans [@hastings_transient_2018]. Knowledge of equilibrium and
-transient dynamics can thus expand our understanding of forest responses at
-different time scales.
+@jackson_balancing_2010; @talluto_extinction_2017]. While estimating
+steady-state proportion provides insight into the potential long-term attractor
+of forest dynamics under given environmental conditions, transient dynamics
+depicts the trajectory to get there [@hastings_transient_2018]. The
+transient is therefore more relevant to the changes likely to unfold during the
+21st century and, thus, to the design of management strategies. Knowledge of
+equilibrium and transient dynamics can thus expand our understanding of forest
+responses at different time scales.
 
 
-Both gradual invasions and abrupt transitions from one biome to another will
-likely take place concurrently. However, given that forests are increasingly
-subjected to pervasive climatic stresses and direct human disturbances, abrupt
-transitions are likely to play a key role in driving the climate shift in
-biomes. Indeed, as climate change slowly modifies the competitive balance among
-species, disturbances destroy the resident community in whole or in part, thus
-providing establishment opportunities for migrating species and making resources
-available for a fast growth. Consequently, forest composition may shift abruptly
-to species that are better suited to current conditions and fail to return to
-their previous state following a disturbance [@johnstone_changing_2016;
-@renwick_temporal_2015; @turner_disturbance_2010]. For example, canopy gaps have
-been shown to locally facilitate establishment of temperate species in mixed
-forests of Ontario [@leithead_northward_2010]. In Alaska, white spruce (*Picea
-glauca*) is invading black spruce (*Picea mariana*) stands following fire and
-permafrost degradation [@wirth_white_2008]. Similarly, moderate disturbances
-favoured the increase of warm-adapted species and led to a broad-scale community
-thermophilization of forests in Québec [@brice_disturbances_2019].
+Given that forests are increasingly subjected to pervasive climatic stresses and
+direct human disturbances, abrupt transitions are likely to play a key role in
+driving the climate shift in biomes. Indeed, as climate change slowly modifies
+the competitive balance among species, disturbances destroy the resident
+community in whole or in part, thus providing establishment opportunities for
+migrating species and making resources available for a fast growth.
+Consequently, forest composition may shift abruptly to species that are better
+suited to current conditions and fail to return to their previous state
+following a disturbance [@johnstone_changing_2016; @renwick_temporal_2015;
+@turner_disturbance_2010]. For example, canopy gaps have been shown to locally
+facilitate establishment of temperate species in mixed forests of Ontario
+[@leithead_northward_2010]. In Alaska, white spruce (*Picea glauca*) is invading
+black spruce (*Picea mariana*) stands following fire and permafrost degradation
+[@wirth_white_2008]. Similarly, moderate disturbances favoured the increase of
+warm-adapted species and led to a broad-scale community thermophilization of
+forests in Québec [@brice_disturbances_2019].
 
 While these examples suggest that disturbances have the potential to catalyse
 shifts to an increasingly deciduous-dominated landscape, other simulation
@@ -247,38 +245,33 @@ properties among disturbance scenarios can shed new light on forest dynamics
 under climate change and may even provide insights into management measures.
 
 
-Here, we investigate the response of forests to recent climate warming
-by estimating the transition probabilities among four forest states: boreal,
-mixed, temperate and pioneer. We address the following questions:
-(1) What are the trends in recent forest transition dynamics? (2) How do
-disturbances and soil characteristics influence the transition probabilities
-among forest states? (3) Do different disturbance types and
-intensities impact the potential long-term equilibrium distribution of forest
-states? And (4) how do different disturbance types and intensities influence
-the short-term transient dynamics following climate change?
+Here, we investigate how forest dynamics is influenced by disturbances and soil
+conditions under recent climate warming. In particular, we ask the following
+questions: (1) What are the trends in recent forest transition dynamics? (2) How
+do disturbances and soil characteristics influence the transition probabilities
+among forest states? (3) Do different disturbance types and intensities impact
+the potential long-term equilibrium distribution of forest states? And (4) how
+do different disturbance types and intensities influence the short-term
+transient dynamics under climate change? We answer those question by estimating
+the influence of environmental covariates on transition probabilities among four
+forest states (boreal, mixed, temperate and pioneer) using a continuous-time
+Markov multi-state model. Using results from our multi-state model, we examine
+the impact of disturbances on forest equilibrium and transient dynamics by
+comparing different complementary matrix properties.
 
-
-We apply a continuous-time Markov multi-state model to the forest dynamics to
-estimate state transition probabilities and evaluate the influence of
-environmental covariates on these transitions. Using results from our
-multi-state model, we investigate the impact of disturbances on forest
-equilibrium and transient dynamics by comparing different complementary
-matrix properties.
-
-We expect that most forests will not change states, i.e., high self-transition
-probabilities, because of the slow demography of trees. However, climate warming
-should promote colonisation by temperate species into mixed and boreal forests
-and competitive exclusion of boreal species, resulting in higher transition
-probabilities from boreal to mixed and from mixed to temperate than the reverse.
-The most conspicuous effect of disturbances is expected to be the destruction of
-trees in place, which should provoke transitions from other states to pioneer.
-Nevertheless, we also anticipate that disturbances will favour climate-related
-transitions (boreal-mixed and mixed-temperate), while soil characteristics of
-coniferous forests (low pH and poor drainage) should slow down the colonisation
-by temperate trees. Disturbances should also accelerate the transient dynamics
-by shortening turnover and convergence times. Together, these effects on
-transitions should result in an increased proportion of temperate forests at
-equilibrium relative to the current state distribution.
+We expect that climate warming should promote colonisation by temperate species
+into mixed and boreal forests and competitive exclusion of boreal species,
+resulting in higher transition probabilities from boreal to mixed and from mixed
+to temperate than the reverse. The most conspicuous effect of disturbances is
+expected to be the destruction of trees in place, which should provoke
+transitions from other states to pioneer. Nevertheless, we also anticipate that
+disturbances will favour climate-related transitions (boreal-mixed and
+mixed-temperate), while soil characteristics of coniferous forests (low pH and
+poor drainage) should slow down the colonisation by temperate trees.
+Disturbances should also accelerate the transient dynamics by shortening
+turnover and convergence times. Together, these effects on transitions should
+result in an increased proportion of temperate forests at equilibrium relative
+to the current state distribution.
 
 # Methods
 
@@ -327,9 +320,9 @@ measured), we recorded 31,690 state transitions (Fig. 2, Table S3).
 
 It should be noted that the definitions of forest states can affect the results
 to some extent. A higher threshold to define the boreal and temperate states
-(e.g., >90% instead of >75% of dominance of boreal and temperate, respectively)
+(e.g., >85% instead of >75% of dominance of boreal and temperate, respectively)
 can influence the transition probabilities, but the direction of the dynamics
-would remain the same.
+would remain the same (see comparison between Tables S4 and S5).
 
 
 
@@ -359,11 +352,11 @@ model, we differentiated two main types of disturbances: natural disturbances
 and harvest, with three levels of intensity each (minor, moderate or major).
 
 Finally, at each plot, several edaphic characteristics were recorded
-[@mffp_placettes-echantillons_2016]. Of the available variables, we selected
-drainage and pH because they largely affect nutrient availability, soil
-structural properties and vegetation development [@tan_environmental_2009].
-These two variables also capture most of the variance in soil characteristics in
-plots across Québec and were orthogonal in a PCA (not shown).
+[@mffp_placettes-echantillons_2016]. We selected drainage and pH because they
+largely affect nutrient availability, soil structural properties and vegetation
+development [@tan_environmental_2009]. These two variables also capture most of
+the variance in soil characteristics in plots across Québec and were orthogonal
+in a PCA (not shown).
 
 Climate and disturbances were included as time-varying explanatory variables
 (often called covariates in survival models), while soil was considered as
@@ -372,17 +365,16 @@ interval $t$ and $t + \Delta t$. Disturbances that occurred during the interval
 $t$ and $t + \Delta t$ were used to model transitions during the same time
 period.
 
+Note that we did not include all potential ecological processes affecting the
+forest dynamics. Rather, we focused on a set of variables that allowed us to
+determine how disturbances and soils influence transition dynamics under recent
+climate change. For instance, we decided not to include an index of propagule
+availability, even though it is known to affect tree range shifts
+[@pearson_climate_2006], as the neighbourhood composition is already very
+strongly correlated with our climate covariates. Our model is therefore
+well-suited for our research goals, but was not designed to make future range
+shift projections.
 
-Although we tested a well-founded set of variables, we did not attempt to
-include every ecological process affecting the forest dynamics. Our goal was not
-to make projections about the future state of Québec forests, but rather to
-explore how disturbances and soils influence transition dynamics under recent
-climate change. Therefore, we did not include propagule pressure as a covariate
-for transition intensities. Propagule availability is known to affect tree range
-shifts [@pearson_climate_2006], and would be important for making projections,
-i.e., when climate and distribution will be decoupled. Our model is therefore
-appropriate to study recent forest dynamics, as the neighbourhood composition is
-very strongly correlated with climate, which was included in our model.
 
 \pagebreak
 
@@ -409,10 +401,7 @@ very strongly correlated with climate, which was included in our model.
 We formalised forest dynamics with a continuous-time multi-state model
 [@jackson_multi-state_2018; @van_den_hout_multi-state_2016] in which transitions
 among states depend upon the current state, time interval, climate, disturbances
-and soil characteristics (Fig. 2).
-
-Markov models are often built using discrete time steps. However, a
-continuous-time Markov model was preferable because it takes into account the
+and soil characteristics (Fig. 2). This type of model takes into account the
 fact that (1) time intervals between surveys were irregular, (2) multiple
 transitions were possible during an interval, and (3) the exact times of
 transitions were unobserved (i.e. observations are interval-censored)
@@ -428,29 +417,28 @@ from Boreal to Temperate and from Temperate to Boreal was considered impossible
 (there is a necessary transition through the Mixed state). However, all states
 can transition directly to Pioneer when disturbed (Fig. 2).
 
-The intensities $q_{r,s}$ can be modelled as the product of a baseline hazard
-$q_{rs.0}$ and a log-linear effect of the explanatory variables $x(t)$ and their
-coefficients $\beta_{rs}$:
+The intensities $q_{r,s}$ can be modelled as follows:
 
-$q_{rs}(t|x(t)) = q_{rs.0}(t)exp(\beta_{rs}'x(t))$.
+$$q_{rs}(t|x(t)) = q_{rs.0}(t)exp(\beta_{rs}'x(t))\text{,}$$
 
-In this model, $q_{rs.0}(t)$ is a baseline hazard function that describes the
-risk for a reference plot $i$ with environment $x_i(t) = 0$, and
+where $x(t)$ is the matrix of explanatory variables (surveys as rows, covariates
+as columns), $\beta_{rs}$ are coefficients to be estimated, and $q_{rs.0}(t)$ is
+a baseline hazard that describes the risk when environment $x(t) = 0$. Hence,
 $exp(\beta_{rs}'x(t))$ is the relative increase or decrease in risk associated
-with the set of characteristics $x_i(t)$. In this model, time-dependent
-variables, such as climate and disturbances, are assumed to be
-piecewise-constant, i.e., the hazard is constant within a time interval $[t, t +
-\Delta{t}]$ and depends on the variable value at $t$, but can change between the
-intervals. Their inclusion in the model allows to fit a non-homogeneous Markov
-process. Estimation of model parameters were obtained by maximising the
-log-likelihood (see Supplementary Methods for details).
+with a set of characteristics $x(t)$. In this model, time-dependent variables,
+such as climate and disturbances, are assumed to be piecewise-constant, i.e.,
+the hazard is constant within a time interval $[t, t + \Delta{t}]$ and depends
+on the variable value at $t$, but can change between the intervals. Their
+inclusion in the model allows to fit a non-homogeneous Markov process.
+Estimation of model parameters were obtained by maximising the log-likelihood
+(see Supplementary Methods for details).
 
-We built five different models: one baseline model with intercept only, one for
-each subgroup of covariates independently (climate, soil and disturbances), and
+We built five models: one baseline model that solely includes the $q_{rs.0}$, one for
+each categories of covariates independently (climate, soil and disturbances), and
 one full model, which combines all the covariates (Table 1). Because multiple
 state transitions are estimated in a single model (all $q_{rs}$ in Fig. 2b), the
 number of parameters increases rapidly with the number of covariates (number of
-modelled transitions (here 10) $\times$ number of covariates). Thus, to reduce
+modelled transitions (here 10) $\times$ (number of covariates + 1)). Thus, to reduce
 the number of parameters, we hypothesised that transitions from any state to
 Pioneer were only determined by disturbances, while climate and soil variables
 should not directly influence these transitions. All quantitative variables were
@@ -473,15 +461,15 @@ Pioneer were modelled as only dependent on disturbances
 
 We first evaluated the goodness-of-fit of each model containing covariates
 (climate, soil, disturbances and full) against the baseline model using
-likelihood ratio tests [@jackson_multi-state_2011], which test if the addition
-of one or more new parameters significantly increases the likelihood of the
-model. We also compared and ranked the models using the Akaike's information
+likelihood ratio tests [@jackson_multi-state_2011], which evaluate if the
+addition of one or more new parameters significantly increases the likelihood of
+the model. We also compared and ranked the models using the Akaike's information
 criterion [AIC; @burnham_model_2002].
 
 
 ### Baseline transition intensities
 
-We first evaluated the trends in recent forest transition dynamics (objective
+We first evaluated the trends in recent forest transition dynamics (question
 1). We used the baseline hazards ($q_{rs.0}$) estimated by our best model as
 indicators of the underlying forest response. For each pair of states, the
 baseline hazard describes the risk to make the transition for a mean forest plot
@@ -490,7 +478,7 @@ baseline hazard describes the risk to make the transition for a mean forest plot
 ### Effects of covariates on transition probabilities
 
 We investigated the influence of environmental covariates on transition dynamics
-(objective 2). We compared the estimated hazard ratios derived from our best
+(question 2). We compared the estimated hazard ratios derived from our best
 model ($exp(\beta_{rs})$). We also computed the predicted 10-year transition
 probabilities of forest plots under different disturbance scenarios, while
 keeping all other covariates at the average found in the ecotonal zone (i.e.,
@@ -500,7 +488,7 @@ of the impacts of disturbances on the transition matrix structure.
 ### Effects of disturbances on transient dynamics and equilibrium
 
 We further investigated how disturbances modify the long-term equilibrium
-(objective 3) and the forest transient dynamics (objective 4). We computed
+(question 3) and the forest transient dynamics (question 4). We computed
 different properties on the Markov transition matrix and compared them among
 levels and types of disturbances along the latitudinal temperature gradient. An
 extensive literature describes the multiple properties of discrete-time Markov
@@ -511,10 +499,10 @@ of our modelled system: (1) the steady-state distribution, which corresponds to
 the potential long-term proportion of forest states at equilibrium; (2) the time
 of convergence towards the steady state, which measures the length of the
 transient period; (3) the turnover time, which measures the rate of transient
-successional changes; and (4) the entropy, which captures the incertitude of the
-next transitions. While their absolute values are likely inaccurate, their
-comparison under various disturbance scenarios can highlight essential features
-of the dynamics.
+successional changes; and (4) the entropy, which captures the incertitude
+regarding the next transitions. While their absolute values are likely
+inaccurate, their comparison under various disturbance scenarios can highlight
+essential features of the dynamics.
 
 First, to measure the potential direction of forest dynamics under a given
 scenario, we estimated the steady-state distribution, $\pi$. For a regular
@@ -547,12 +535,12 @@ distribution:
 
 $$Turnover = \displaystyle -\sum_r{\pi_r \times Turnover_{r}}\text{.}$$
 
-Finally, @hill_markov_2004 suggested using the entropy of a discrete-time
-transition matrix as an index of the incertitude of successional changes. It
-measures how uncertain we are about the next new state of a site knowing its
-current state. For a continuous-time process, the entropy can be measured using
-the jump matrix [@spencer_continuous-time_2005], which contains the
-probabilities that the next state after state $r$ is state $s$:
+Finally, @hill_markov_2004 proposed entropy of a discrete-time transition matrix
+as an index of the incertitude of successional changes. It measures how
+uncertain we are about the next new state of a site knowing its current state.
+For a continuous-time process, the entropy can be measured using the jump matrix
+[@spencer_continuous-time_2005], which contains the probabilities that the next
+state after state $r$ is state $s$:
 
 $$j_{rs} = −q_{rs}/q_{rr}\text{.}$$
 
@@ -572,7 +560,7 @@ All analyses were performed using the R programming language version 3.6.1
 [@r_core_team_r_2019]. The list of R packages that were used throughout the
 analysis is provided in the Supporting Information (Table S1). All data used
 in the study, in addition to R scripts that reproduced the analyses and
-figures, will be made available online on Github upon manuscript acceptance.
+figures, will be made available online on GitHub upon manuscript acceptance.
 
 
 # Results
@@ -586,7 +574,7 @@ forests (69.2 and 72.8%, respectively; Fig. 2a).
 
 ## Model evaluation
 
-Overall, the full model, which include climate, soil and disturbance variables,
+Overall, the full model, which includes climate, soil and disturbance variables,
 had the best fit and predictive performances for the observed data (Tables 2;
 Fig. S3). The second-best model was the disturbance model, but it was far behind
 with a difference in AIC of almost 1500 units from the full model (Table 2).
@@ -699,7 +687,7 @@ and logging was conspicuous only for major disturbances. For both types of major
 disturbances, the transition probabilities to Pioneer showed a great increase
 compared to moderate disturbances, but these values exploded in the severely
 logged transition matrix, exceeding self-transitions. Interestingly, the
-estimated probability of Mixed to Temperate transition remained quite high after
+estimated transition probability from Mixed to Temperate remained quite high after
 major disturbances.
 
 
@@ -770,14 +758,13 @@ S6).
 
 The half-life to equilibrium was the longest at 11.77°C, north of the ecotone,
 in the balsam fir-white birch domain, while it was the shortest in the
-southernmost latitudes (Fig. 7e,f). Interestingly, none of the features in the
-three indices are aligned. Moderate disturbances flattened and shifted this peak
-to the north and the effect of moderate logging (Fig. 7f) was stronger than
-natural disturbances (Fig. 7e). In the balsam fir-white birch, the half-life to
-reach equilibrium distribution was reduced almost by half by moderate logging.
-With major disturbances, forests all along the temperature gradient can reach
-very quickly their steady-state distribution (maximum of about 8 years for major
-logging and 25 years for major natural disturbances).
+southernmost latitudes (Fig. 7e,f). Moderate disturbances flattened and shifted
+this peak to the north and the effect of moderate logging (Fig. 7f) was stronger
+than natural disturbances (Fig. 7e). In the balsam fir-white birch, the
+half-life to reach equilibrium distribution was reduced almost by half by
+moderate logging. With major disturbances, forests all along the temperature
+gradient can reach very quickly their steady-state distribution (maximum of
+about 8 years for major logging and 25 years for major natural disturbances).
 
 ![Changes in the characteristics of the forest transient dynamics along the temperature (latitudinal) gradient for different disturbance scenarios: minor (solid), moderate (dashed) and major (dotted) disturbances for both natural (a,c,e) and logging (b,d,f). All other covariates are fixed at the average conditions found in the ecotone to focus solely on the effect of disturbances along the temperature gradient. The turnover of the whole system (i.e. whole transition matrix) (a,b) corresponds the time spent in a state before transitioning to the next and is given by the average of each state turnover time over the steady-state distribution. The entropy of the whole system (c,d) corresponds to the uncertainty of the next transition and is given by the average of each state entropy over the steady-state distribution. The half-life to equilibrium (e,f) is the time taken to reach 50% of the steady-state distribution, i.e. when the first eigenvalue becomes twice as large as the contribution of the second eigenvalue. The polygon approximates the positions of the ecotone along the temperature gradient.](res/fig7_transients.pdf)
 
@@ -922,9 +909,9 @@ states) and that there was no directional shift associated with disturbances.
 Hence, boreal forests lose their persistence when moderately disturbed but
 remain resilient as they return to their previous boreal state. Under major
 disturbances, boreal forests collapsed to pioneer state and reached this new
-equilibrium swiftly (short half-life). This observation agrees with previous
-studies suggesting that boreal forests can easily shift into an alternative
-treeless state in response to severe or repeated disturbances
+equilibrium swiftly (short half-life). This observation is consistent with
+previous studies suggesting that boreal forests can easily shift into an
+alternative treeless state in response to severe or repeated disturbances
 [@payette_shift_2003; @sanchez-pinillos_resistance_2019].
 
 In contrast, the ecotone is characterised by a rapid turnover and a high entropy
@@ -953,7 +940,7 @@ entails changes in tree species diversity and composition, but a complete
 transformation of forest dynamics and functions. In the long term, this regime
 shift could locally increase tree diversity [@berteaux_cc-bio_2010] and carbon
 sequestration [@thurner_carbon_2014], modify disturbance regimes [reduced
-flammability of broadleaf species @terrier_potential_2013, and reduced
+flammability of broadleaf species @terrier_potential_2013; and reduced
 sensitivity to current outbreak-prone pest @mffp_insectes_2018], alter soil
 microbial activity [@laganiere_how_2010] and affect wildlife distribution
 [@mizel_rapidly_2016].
@@ -966,25 +953,25 @@ the preindustrial forest conditions [@pinna_amenagement_2009]. Yet,
 @boulanger_climate_2019 showed that such management would fail to restore
 historical forest conditions under future climate change, and that disturbances
 would only exacerbate the gap. While trying to maintain a historical state is
-likely impractical, our results emphasise that forest management should consider
-the present system state in relation to its transient dynamics as well as its
-most likely trajectory. Our study also reveals the potential of moderate
-disturbances to catalyse climate-related transitions. This suggests that
-thoughtful logging practices could be used to reduce extinction debt and
-colonisation credit, and thus tree migration lags. Other studies also recommend
-to plant temperate trees farther north outside their current range to facilitate
-their migration [@duveneck_measuring_2016; Vieira et al. in prep]. However,
-before implementing such silvicultural strategies, key questions need to be
-answered. For instance, will multiple interacting disturbances exacerbate tree
-mortality? Which species will be able to benefit from the opportunities created
-by canopy openings? And how will these rapid transitions feedback to ecosystem
-processes and functions? The rate of recent climate change already outpaces tree
-migration capacity [@sittaro_tree_2017], and even more so the scientific
-capacity to understand and mitigate its consequences [@jackson_balancing_2010].
-Therefore, in order to insure long-term forest health at the boreal-temperate
-ecotone, we need to simultaneously limit global warming through drastic
-reduction of greenhouse gas emission and intensify research effort to develop
-effective adaptation strategies.
+likely impractical, our results emphasise that forest management should not only
+consider the present system state, but also its most likely trajectory. Our
+study also reveals the potential of moderate disturbances to catalyse
+climate-related transitions. This suggests that thoughtful logging practices
+could be used to reduce extinction debt and colonisation credit, and thus tree
+migration lags. Other studies also recommend to plant temperate trees farther
+north outside their current range to facilitate their migration
+[@duveneck_measuring_2016; Vieira et al. in prep]. However, before implementing
+such silvicultural strategies, key questions need to be answered. For instance,
+will multiple interacting disturbances exacerbate tree mortality? Which species
+will be able to benefit from the opportunities created by canopy openings? And
+how will these rapid transitions feedback to ecosystem processes and functions?
+The rate of recent climate change already outpaces tree migration capacity
+[@sittaro_tree_2017], and even more so the scientific capacity to understand and
+mitigate its consequences [@jackson_balancing_2010]. Therefore, in order to
+insure long-term forest health at the boreal-temperate ecotone, we need to
+simultaneously limit global warming through drastic reduction of greenhouse gas
+emission and intensify research effort to develop effective adaptation
+strategies.
 
 
 
