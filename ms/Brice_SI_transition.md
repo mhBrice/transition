@@ -3,7 +3,7 @@ title: Supplementary Information
 geometry: margin=1in
 header-includes:
     - \usepackage{setspace}
-    - \setstretch{1,5}
+    - \setstretch{1.5}
     - \usepackage{lscape}
     - \newcommand{\blandscape}{\begin{landscape}}
     - \newcommand{\elandscape}{\end{landscape}}
@@ -215,25 +215,10 @@ performance metrics were then averaged for each model.
 \hspace{1em}Ulmus thomasii & Rock elm & 3\\*
 \end{longtable}
 
-\pagebreak
-
-**Table S2**. List of R packages used.
-
-| Packages | Main functions | Uses                                 | References             |
-|----------|----------------|--------------------------------------|------------------------|
-| msm      | msm            | Multi-state Markov models in continuous time | @jackson_multi-state_2011 |
-|          | lrtest.msm     | Likelihood ratio test                | |
-|          | pmatrix.msm    | Transition probability matrix        | |
-|          | hazard.msm     | Calculate tables of hazard ratios for covariates on transition intensities  | |
-|          | pnext.msm      | Probability of each state being next | |
-|          | sojourn.msm    | Mean sojourn times from a multi-state model | |
-| sf       |                | Manipulation and mapping of spatial data   | @pebesma_simple_2018 |
-| pROC     | multiclass.roc | Compute multi-class AUC              | @robin_proc_2011 |
-| scoring  | logscore       | Compute logarithmic score            | @merkle_choosing_2013 |
 
 \pagebreak
 
-**Table S3**. Frequency of all observed transitions between the four forest states during the study period. Transitions are from rows to columns.
+**Table S2**. Frequency of all observed transitions between the four forest states during the study period. Transitions are from rows to columns.
 
 \begin{tabular}{>{\bfseries}lccccc}
 \toprule
@@ -248,11 +233,10 @@ Sum & 11383 & 6365 & 8475 & 5467 & 31690\\
 \end{tabular}
 
 
-
 \pagebreak
 \blandscape
 
-**Table S4**. Table of baseline transition intensities ($q_{rs,0}$ in first column) and Hazard ratios (HR) and their 95% confidence intervals as estimated from the best multi-state transition model. The HR of covariates are interpretable as multiplicative effects on the baseline hazard, where values above 1 indicate that the predictor is associated with a greater risk of state transition, whereas values below 1 indicate a lower risk of transition. Covariates statistically different from 1 are coloured in grey.
+**Table S3**. Table of baseline transition intensities ($q_{rs,0}$ in first column) and Hazard ratios (HR) and their 95% confidence intervals as estimated from the best multi-state transition model. The HR of covariates are interpretable as multiplicative effects on the baseline hazard, where values above 1 indicate that the predictor is associated with a greater risk of state transition, whereas values below 1 indicate a lower risk of transition. Covariates statistically different from 1 are coloured in grey.
 
 \begin{table}[H]
 \setstretch{1.4}
@@ -285,7 +269,7 @@ Temperate - Temperate & -0.016\newline (-0.019, -0.013) & \cellcolor{white}{ } &
 \pagebreak
 \blandscape
 
-**Table S5**. Table of baseline transition intensities and hazard ratios as estimated from a full multi-state model ran on forest states defined with a different threshold than in the main manuscript. Here, plots are assigned to Boreal or Temperate states using a threshold of >85% (instead of >75%) of species dominance of the plot basal area. See Table S5 for details about the interpretation of the table.
+**Table S4**. Table of baseline transition intensities and hazard ratios as estimated from a full multi-state model ran on forest states defined with a different threshold than in the main manuscript. Here, plots are assigned to Boreal or Temperate states using a threshold of >85% (instead of >75%) of species dominance of the plot basal area. See Table S5 for details about the interpretation of the table.
 
 \begin{table}[H]
 \setstretch{1.4}
@@ -318,6 +302,23 @@ Temperate - Temperate & -0.018\newline (-0.022, -0.015) & \cellcolor{white}{ } &
 
 \pagebreak
 
+
+**Table S5**. List of R packages used.
+
+|**Packages** |**Main functions** | **Uses**                     | **References**           |
+|----------|----------------|--------------------------------------|------------------------|
+| msm      | msm            | Multi-state Markov models in continuous time | @jackson_multi-state_2011 |
+|          | lrtest.msm     | Likelihood ratio test                | |
+|          | pmatrix.msm    | Transition probability matrix        | |
+|          | hazard.msm     | Calculate tables of hazard ratios for covariates on transition intensities  | |
+|          | pnext.msm      | Probability of each state being next | |
+|          | sojourn.msm    | Mean sojourn times from a multi-state model | |
+| sf       |                | Manipulation and mapping of spatial data   | @pebesma_simple_2018 |
+| pROC     | multiclass.roc | Compute multi-class AUC              | @robin_proc_2011 |
+| scoring  | logscore       | Compute logarithmic score            | @merkle_choosing_2013 |
+
+
+\pagebreak
 
 # Supplementary figures
 
