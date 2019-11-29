@@ -2,66 +2,8 @@
 
 # from https://www.datascienceblog.net/post/machine-learning/performance-measures-multi-class-problems/
 
-### Prediction ###
-# pmat_fun <- function(mod, t, covariates, from) {
-#   pmat <- pmatrix.msm(x = mod, t = t, covariates = as.list(covariates[i,]))
-#   st_from <- which(states == from[i])
-#   pvec <- pmat[st_from,]
-#   p_ls[[i]] <- pvec
-# }
-# apply(dat, 1, function(y) pmat_fun(mod, dat['t'], dat['cov_names'], dat['from']))
 
-
-### A. Hard classifier method (use predicted states, not probability) ####
-
-### 1. Accuracy ####
-
-calculate.accuracy <- function(predictions, ref.labels) {
-  return(length(which(predictions == ref.labels)) / length(ref.labels))
-}
-
-### 2. Micro and macro averages of the F1-score from confusion matrix ####
-
-
-get.conf.stats <- function(cm) {
-  out <- vector("list", length(cm))
-  for (i in seq_along(cm)) {
-    x <- cm[[i]]
-    tp <- x$table[x$positive, x$positive] 
-    fp <- sum(x$table[x$positive, colnames(x$table) != x$positive])
-    fn <- sum(x$table[colnames(x$table) != x$positie, x$positive])
-    # TNs are not well-defined for one-vs-all approach
-    elem <- c(tp = tp, fp = fp, fn = fn)
-    out[[i]] <- elem
-  }
-  df <- do.call(rbind, out)
-  rownames(df) <- unlist(lapply(cm, function(x) x$positive))
-  return(as.data.frame(df))
-}
-get.micro.f1 <- function(cm) {
-  cm.summary <- get.conf.stats(cm)
-  tp <- sum(cm.summary$tp)
-  fn <- sum(cm.summary$fn)
-  fp <- sum(cm.summary$fp)
-  pr <- tp / (tp + fp)
-  re <- tp / (tp + fn)
-  f1 <- 2 * ((pr * re) / (pr + re))
-  return(f1)
-}
-
-
-get.macro.f1 <- function(cm) {
-  c <- cm[[1]]$byClass # a single matrix is sufficient
-  re <- sum(c[, "Recall"]) / nrow(c)
-  pr <- sum(c[, "Precision"]) / nrow(c)
-  f1 <- 2 * ((re * pr) / (re + pr))
-  return(f1)
-}
-
-
-### B. Soft classifier ####
-
-### 3. AUC generalization from Hand and Till ####
+### 1. AUC generalization from Hand and Till ####
 
 compute.A.conditional <- function(pred.matrix, i, j, ref.outcome) {
   # computes A(i|j), the probability that a randomly 
@@ -88,7 +30,7 @@ compute.A.conditional <- function(pred.matrix, i, j, ref.outcome) {
 
 multiclass.auc <- function(pred.matrix, ref.outcome) {
   labels <- colnames(pred.matrix)
-  A.ij.cond <- utils::combn(labels, 2, function(x, pred.matrix, ref.outcome) {x
+  A.ij.cond <- combn(labels, 2, function(x, pred.matrix, ref.outcome) {x
     i <- x[1]
     j <- x[2]
     A.ij <- compute.A.conditional(pred.matrix, i, j, ref.outcome)
@@ -106,73 +48,7 @@ multiclass.auc <- function(pred.matrix, ref.outcome) {
   return(M)
 }
 
-
-### 4. Chi2?? ####
-
-chi_contrib <- function(observ, expect) {
-  rowSums(((observ - expect)^2)/expect)
-}
-
-### PSEUDO R2 ####
-
-PseudoR2 <- function (mod0, mod, to = NULL, dat = NULL) {
-  
-  
-  D.full <- mod$minus2loglik
-  L.full <- D.full/-2
-  D.base <- mod0$minus2loglik
-  L.base <- D.base/-2
-  
-  G2 <- -2 * (L.base - L.full)
-  n <- nrow(mod$data$mf)
-  
-  edf <- mod$paramdata$npars
-  
-  McFadden <- 1 - (L.full/L.base)
-  McFaddenAdj <- 1 - ((L.full - edf)/L.base)
-  Nagelkerke <- (1 - exp((D.full - D.base)/n))/(1 - exp(-D.base/n))
-  CoxSnell <- 1 - exp(-G2/n)
-  
-  BIC <- D.full + log(n)*edf
-  
-  if(!is.null(dat)) {
-    to <- DescTools::Dummy(to, "full")
-    y.hat.resp <- msm_pred(mod, t = dat[,1], from = dat[,2], covariates = dat[,-c(1,2)])
-    Efron <- (1 - (sum(rowSums((to - y.hat.resp)^2)))/(sum(rowSums((to - apply(to,2,mean))^2))))
-    biserial_cor <- c()
-    for(s in (colnames(to))) {
-      biserial_cor[s] <- cor(to[,s], y.hat.resp[,s])^2
-    }
-    
-  } else {
-    Efron = NA
-    biserial_cor = NA
-  }
-  res <- c(McFadden = McFadden, McFaddenAdj = McFaddenAdj,
-           CoxSnell = CoxSnell, Nagelkerke = Nagelkerke, 
-           Efron = Efron, biserial_cor = biserial_cor,
-           AIC = AIC(mod), logLik = L.full,
-           logLik0 = L.base, G2 = G2)
-  
-  return(res)
-}
-
-#### BRIER SCORE (MSE) ####
-
-brier_orig <- function(to, pred){
-  mean(rowSums((pred - to)^2))
-}
-
-brier_contrib <- function(to, pred){
-  rowSums((pred - to)^2)
-}
-
-brier_state <- function(to, pred) {
-  colMeans((pred - to)^2)
-}
-
-brier_skill <- function(BS, BSref) 1 - BS/BSref
-
+### 2. LOGARITHMIC SCORE ####
 
 logscore_state <- function(to, pred, states = c("Boreal", "Mixed", "Pioneer", "Temperate")) {
   tmp <- c()
@@ -183,23 +59,7 @@ logscore_state <- function(to, pred, states = c("Boreal", "Mixed", "Pioneer", "T
   tmp
 }
 
-sphscore_state <- function(to, pred, states = c("Boreal", "Mixed", "Pioneer", "Temperate")) {
-  tmp <- c()
-  for(s in states) {
-    tmp <- cbind(tmp, sphscore(to[,s] ~ pred[,s]))
-  }
-  colnames(tmp) <- states
-  tmp
-}
-
-
-
-#### EFRON PSEUDO R2 (OLS) ####
-
-efron_r2 <- function(to, pred) {
-  (1 - (colSums((to - pred)^2))/(colSums((to - colMeans(to))^2)))
-}
-
+### PLOT PERFORMANCE MEASURES ####
 
 plot_score <- function(score_ls, ylab = "Score", 
                        mod_names = c("Baseline", "Climate", "Soil", "Disturbances", "Full"),

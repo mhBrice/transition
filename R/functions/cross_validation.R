@@ -40,7 +40,7 @@ to_trans <- function(data, covar_names = NULL) {
   
   states_trans <- states_trans %>% 
     mutate(t = year2 - year1, trans = paste0(from,"-",to)) %>% 
-    filter(!is.na(to)) %>% select(plot_id, t, from, to, trans, covar_names)
+    filter(!is.na(to)) %>% select(plot_id, year1, year2, t, from, to, trans, covar_names)
 }
 
 ### CREATE FOLD  ####
@@ -56,6 +56,7 @@ kfold <- function(strata, k = 10, id) {
 }
 
 ### CHECK COVARIATE DISTRIBUTION IN FOLD ####
+
 check_fold <- function(fold, data, data_trans) {
   covar_names <- c("sTP", "sCMI", "PH_HUMUS",  "natural", "logging")
   valid <- data %>% filter(plot_id %in% fold)
@@ -73,6 +74,7 @@ check_fold <- function(fold, data, data_trans) {
 
 
 ### CROSS VALIDATION OF MSM ####
+
 cv_msm <- function(data, fold, Q, covar_form, covar_names, covinits = NULL) {
   cv_res <- list()
   for(i in names(fold)){
