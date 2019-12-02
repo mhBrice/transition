@@ -1,14 +1,14 @@
 ### Plot best model ####
 
-### PACKAGES ####
-library(graphicsutils)
-library(dplyr)
-library(msm)
-library(sf)
-library(knitr)
-library(kableExtra)
+# Table 2
+# Figure 4
+# Figure 5
+# Figure S4
 
-### FUNCTIONS ####
+
+### PACKAGES & FUNCTIONS ####
+
+source("R/functions/packages.R")
 
 source('R/functions/plot_msm.R')
 
@@ -19,44 +19,49 @@ source('R/functions/prep_data.R')
 # Load msm results
 
 load("res/msm_all75.rda")
-msm_all <- msm_all75
-msm_glb <- msm_all[["msm_glb"]]
+
+msm_glb <- msm_all75[["msm_glb"]]
 
 
-### Estimated ratio of transition intensities
-envmean <- aggregate(states_ba[,c("sTP", "sCMI", "DRAIN", "PH_HUMUS")], 
-                     by = list(states_ba$ecoreg3), mean)
-mixed_mean <- envmean[3,-1]
+# Mean environmental conditions at the ecotone
 
-covar_nat <- list(c(mixed_mean), 
-                  c(natural1 = 1, mixed_mean),
-                  c(natural2 = 1, mixed_mean))
+ll_ecotone <- which(states_ba$ecoreg3=="Mixed")
 
-covar_log <- list(c(mixed_mean), 
-                  c(logging1 = 1, mixed_mean),
-                  c(logging2 = 1, mixed_mean))
+mu_ecotone <- as.list(apply(states_ba[ll_ecotone, c("sTP", "sCMI", "DRAIN", "PH_HUMUS")],
+                            2, mean))
+
+
+# Lists of covariates with varying disturbance levels
+covar_nat <- list(c(mu_ecotone), 
+                  c(natural1 = 1, mu_ecotone),
+                  c(natural2 = 1, mu_ecotone))
+
+covar_log <- list(c(mu_ecotone), 
+                  c(logging1 = 1, mu_ecotone),
+                  c(logging2 = 1, mu_ecotone))
+
+
+covar <- list(c(mu_ecotone), 
+              c(natural1 = 1, mu_ecotone),
+              c(natural2 = 1, mu_ecotone), 
+              c(logging1 = 1, mu_ecotone),
+              c(logging2 = 1, mu_ecotone))
 
 # Probability matrix
-covar <- list(c(mixed_mean), 
-              c(natural1 = 1, mixed_mean),
-              c(natural2 = 1, mixed_mean), 
-              c(logging1 = 1, mixed_mean),
-              c(logging2 = 1, mixed_mean))
-
 p_list <- lapply(covar, 
-                 function(x) pmatrix.msm(msm_glb, t=10, 
+                 function(x) pmatrix.msm(msm_glb, t = 10, 
                                          covariates = as.list(x), 
                                          ci = "normal"))
 
 
-### TABLE OF MODEL RESULTS ####
+### TABLE 2. MODEL RESULTS ####
 
 
-stats_msm <- lapply(msm_all, 
+stats_msm <- lapply(msm_all75, 
                     function(x) c("Covariates" = NA,
                                   "Number of parameters" = x$paramdata$npars-length(x$fixedpars),
                                   "-2 Log-likelihood" = round(x$minus2loglik,1), 
-                                  "Delta AIC" = round(AIC(x)-AIC(msm_all$msm_glb),1), 
+                                  "Delta AIC" = round(AIC(x)-AIC(msm_all75$msm_glb),1), 
                                   "LR test" = NA)) %>%
   do.call(rbind,.) %>% as.data.frame(.)
 
@@ -76,7 +81,7 @@ kable(stats_msm, format = "latex",
   row_spec(c(0,5), bold = TRUE) 
 
 
-### PLOT COEFFICIENTS BEST MODEL ####
+### FIGURE 4. PLOT COEFFICIENTS BEST MODEL ####
 
 varnames <- c("Temperature", "CMI", 
               "Drainage", "pH", 
@@ -91,7 +96,7 @@ dev.off()
 
 
 
-### Plot transition matrix #####
+### FIGURE 5. PLOT TRANSITION MATRIX #####
 
 dist_title <- c("Minor", "Moderate natural", "Major natural", 
                 "Moderate logging", "Major logging")
@@ -114,13 +119,13 @@ for(i in 1:length(p_list)) {
 }
 dev.off()
 
-### PLOT TRANSITION PROBABILITY ####
+### FIGURE S4. PLOT TRANSITION PROBABILITY ####
 
 mat <- matrix(c(0:14,0,0,15,15,0), 5, 4)
 mat <- rbind(mat, c(0,16,16,0))
 
 
-pdf("res/figSupp_proba.pdf",
+pdf("res/figS4_proba.pdf",
     width = 7, height = 7)
 #quartz(width = 7, height = 7)
 layout(mat, widths = c(.6,1,1,.45), heights = c(.17,1,1,1,1,.2))

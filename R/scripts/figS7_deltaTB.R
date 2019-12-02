@@ -1,17 +1,13 @@
 ### PLOT CHANGE IN BA OF TEMPERATE AND BOREAL STATES VS TRANSITION TYPES ####
 
 ### PACKAGES ####
-library(graphicsutils)
-library(dplyr)
-library(msm)
-library(sf)
-library(data.table)
+
+source("R/functions/packages.R")
 
 
 ### DATA ####
 
 source('R/functions/prep_data.R')
-
 
 
 states_trans <- states_ba %>% 

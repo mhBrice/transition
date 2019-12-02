@@ -46,6 +46,7 @@ vignettes/*.pdf
 .Rproj.user
 
 # large files
-res/cv_msm*.rda
+res/cv_msm_all75.rda
 submission/
 ms/collab_comments.md
+R/old

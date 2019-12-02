@@ -1,8 +1,8 @@
 ### DATA FORMATTING FOR COMMUNITY TRANSITION ####
 
 ### PACKAGES ####
-require(dplyr)
-require(reshape2)
+
+source("R/functions/packages.R")
 
 ### DATA ####
 
@@ -80,16 +80,16 @@ states_ba <- sp_ba %>%
                                 (Temperate/tot_TB >= .25 & Boreal/tot_TB >= .25) ~ "Mixed",
                                 (Boreal/tot_TB > .75) ~ "Boreal",
                                 (Temperate/tot_TB > .75) ~ "Temperate"))) %>%
-  mutate(states_ba90 = as.factor(case_when((Pioneer > tot_TB) ~ "Pioneer",
-                                         (Temperate/tot_TB >= .1 & Boreal/tot_TB >= .1) ~ "Mixed",
-                                         (Boreal/tot_TB > .9) ~ "Boreal",
-                                         (Temperate/tot_TB > .9) ~ "Temperate")))
+  mutate(states_ba85 = as.factor(case_when((Pioneer > tot_TB) ~ "Pioneer",
+                                         (Temperate/tot_TB >= .15 & Boreal/tot_TB >= .15) ~ "Mixed",
+                                         (Boreal/tot_TB > .85) ~ "Boreal",
+                                         (Temperate/tot_TB > .85) ~ "Temperate")))
 
 
 # Sites with BA less than  5m2/ha were considered pioneer whatever the species present
 
 states_ba$states_ba[which(sp_ba$TOTAL <= 5)] <- "Pioneer"
-states_ba$states_ba90[which(sp_ba$TOTAL <= 5)] <- "Pioneer"
+states_ba$states_ba85[which(sp_ba$TOTAL <= 5)] <- "Pioneer"
 
 
 # Order
@@ -102,8 +102,8 @@ states_ba <- states_ba %>%
 states_ba$states_num <- as.factor(states_ba$states_ba)
 levels(states_ba$states_num) <- c("1","2","3","4")
 
-states_ba$states_num90 <- as.factor(states_ba$states_ba90)
-levels(states_ba$states_num90) <- c("1","2","3","4")
+states_ba$states_num85 <- as.factor(states_ba$states_ba85)
+levels(states_ba$states_num85) <- c("1","2","3","4")
 
 
 saveRDS(states_ba, "data/states_ba.RDS")
@@ -122,7 +122,7 @@ states_envba <- states_ba %>%
 ### SELECT & SUBSET ####
 
 states_envba <- states_envba %>% 
-  select(ID_PE:states_num90, 
+  select(ID_PE:states_num85, 
          "sTP", "sCMI", 
          "natural", "logging", 
          "DRAIN","PH_HUMUS", "ecoreg3", "ecoreg6") %>% 

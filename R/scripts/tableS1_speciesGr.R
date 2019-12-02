@@ -1,15 +1,15 @@
-#### TABLE SPECIES GROUP #####
+#### TABLE S1. SPECIES GROUP #####
 
 ### PACKAGES ####
 
-library(dplyr)
-library(knitr)
-library(kableExtra)
+source("R/functions/packages.R")
 
 ### DATA ####
 
 source("R/functions/prep_data.R")
+
 tree_code <- read.csv2("data/ref_spCode.csv")
+
 sp_ba <- readRDS("data/sp_mat_ba_nov2019.RDS") %>% filter(ID_PE %in% states_ba$ID_PE)
 
 ### GROUP ####

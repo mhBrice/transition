@@ -1,13 +1,9 @@
-### Plot best model ####
+### Plot baseline intensities ####
 
 ### PACKAGES ####
-library(graphicsutils)
-library(dplyr)
-library(msm)
-library(diagram)
-library(latex2exp)
 
-source('R/functions/markov.R')
+source("R/functions/packages.R")
+
 ### DATA ####
 
 source('R/functions/prep_data.R')
@@ -20,6 +16,7 @@ msm_glb <- msm_all75[["msm_glb"]]
 
 
 ### Transition intensity diagram
+
 qmat  <- t(coef(msm_glb)$baseline)
 diag(qmat) <- 0 # remove self-transition
 qmat <- round(qmat,4)
@@ -60,6 +57,9 @@ text(pm$arr$TextX, pm$arr$TextY,
 
 dev.off()
 
+
+### Ratio of transition intensities
+
 qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2))
 qratio.msm(msm_glb, ind1 = c(2,3), ind2 = c(3,2))
 # M-T vs T-M
@@ -79,30 +79,8 @@ qratio.msm(msm_glb, ind1 = c(2,1), ind2 = c(1,2))
 qmatrix.msm(msm_glb, covariates = list(natural1=1, DRAIN = -1.2032652))
 qmatrix.msm(msm_glb, covariates = list(natural1=1, DRAIN = 1.9743119))
 
-quartz()
 
 
-
-pmat <- pmatrix.msm(msm_glb)
-colSums(pmat)
-diag(pmat) = 0
-quartz()
-transitionPlot(tr_intens, box_prop = cbind(rowSums(trans_nb)/sum(trans_nb), colSums(trans_nb)/sum(trans_nb)), fill_start_box = c("grey" , "black"))
-
-(trans_perc <- trans_nb/rowSums(trans_nb))
-
-trans_perc[1,4] <- 0
-trans_perc[4,1] <- 0
-
-quartz()
-transitionPlot(trans_perc)
-
-i = rowSums(trans_nb)/sum(trans_nb)
-
-
-
-tr_intens  <- t(coef(msm0)$baseline)
-diag(tr_intens) <- 0
 
 
 

@@ -1,15 +1,8 @@
 ### CONTINUOUS TIME MARKOV MODEL ####
 
-### PACKAGES ####
+### PACKAGES & FUNCTIONS ####
 
-library(msm)
-library(dplyr)
-library(data.table)
-library(DescTools)
-library(sf)
-library(caret)
-
-### FUNCTIONS ####
+source("R/functions/packages.R")
 
 source("R/functions/cross_validation.R")
 
@@ -17,7 +10,7 @@ source("R/functions/cross_validation.R")
 
 source('R/functions/prep_data.R')
 
-
+# states_ba$states_num=states_ba$states_num85
 (st_table <- statetable.msm(states_num, plot_id, data = states_ba))
 
 ### Q matrix with allowed transition ####
@@ -36,16 +29,15 @@ Q.crude  <- crudeinits.msm(states_num ~ year_measured, plot_id, data=states_ba, 
 
 # ---------------------------------------------------------------------#
 # msm0 - Null model
-# msm_c - Climate model
-# msm_d - Disturbance model (natural + harvest)
-# msm_dlag - Disturbance model (natural + harvest)
-# msm_s - Soil model
-# msm_glb - Complete model
+# msm_c - Climate model (sTP + sCMI)
+# msm_d - Disturbance model (natural + logging)
+# msm_s - Soil model (PH_HUMUS + DRAIN)
+# msm_glb - Complete model (sTP + sCMI + PH_HUMUS + DRAIN + natural + logging)
 # ---------------------------------------------------------------------#
 
 
 
-### msm0 - Null model ####
+### Null model ####
 
 msm0 <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
                  qmatrix = Q, 
@@ -55,7 +47,7 @@ msm0 <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
                  opt.method = "optim")
 
 
-### msm_c - Climate model ####
+### Climate model ####
 
 covariates_c <- make_forms(covar = c("sTP", "sCMI"), covar_p = ~1)
 
@@ -68,11 +60,9 @@ msm_c <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
              covariates = covariates_c)
 
 
-1 - msm_c$minus2loglik/msm0$minus2loglik
-lrtest.msm(msm0, msm_c)
 
 
-### msm_s - Soil model ####
+### Soil model ####
 covariates_s <- make_forms(covar = c("DRAIN","PH_HUMUS"), covar_p = ~1)
 
 
@@ -85,12 +75,8 @@ msm_s <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
              covariates = covariates_s)
 
 
-1 - msm_s$minus2loglik/msm0$minus2loglik
-lrtest.msm(msm0, msm_s)
 
-
-
-### msm_d - Disturbance model ####
+### Disturbance model ####
 
 covariates_d <- make_forms(covar = c("natural", "logging"))
 
@@ -102,17 +88,9 @@ msm_d <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
               opt.method = "optim", 
               covariates = covariates_d)
 
-# hr <- hazard.msm(msm_d)
-# lhr <- lapply(hr, function(x) log(x[,"HR"]))
-# 
-
-1 - msm_d$minus2loglik/msm0$minus2loglik
-
-lrtest.msm(msm0, msm_c, msm_d)
 
 
-
-### msm_glb - Complete model ####
+### Complete model ####
 
 covariates_glb <- make_forms(covar = c("sTP", "sCMI", "DRAIN", "PH_HUMUS", "natural", "logging"),
            covar_p = c("natural", "logging"))
@@ -126,91 +104,28 @@ msm_glb <- msm(states_num ~ year_measured, subject = plot_id,
                control = list(trace=1, maxit=5000, fnscale=36000),
                opt.method = "optim", 
                covariates = covariates_glb)
-hr <- hazard.msm(msm_glb)
-lhr <- lapply(hr, function(x) log(x[,"HR"]))
-#
-1 - msm_glb$minus2loglik/msm0$minus2loglik
+
 
 ### Save all models ####
+
 msm_all75 <- list(msm0 = msm0, 
                 msm_c = msm_c, 
                 msm_s = msm_s, 
                 msm_d = msm_d, 
                 msm_glb = msm_glb)
 save(msm_all75, file = "res/msm_all75.rda")
-
-#################################
-### 10-FOLD CROSS-VALIDATION ####
-#################################
-strata <- data.table(states_ba) 
-strata <- strata[ , list(ecoreg = first(ecoreg6), 
-                         sTP = first(sTP),
-                         sCMI = first(sCMI),
-                         PH_HUMUS = first(PH_HUMUS),
-                         DRAIN = first(DRAIN),  
-                         natural = max(as.numeric(natural)),  
-                         logging = max(as.numeric(logging))), 
-                  by = plot_id]
-
-id <- strata$plot_id
-strata$strata <- paste0(strata$ecoreg, strata$sTP, strata$sCMI, strata$PH_HUMUS,
-                          strata$DRAIN, strata$natural, strata$logging)
-fold <- kfold(strata = strata$strata, id = id, k = 10)
-
-states_trans <- to_trans(states_ba, covar_names = c("sTP", "sCMI", "PH_HUMUS",  "natural", "logging"))
-lhr[1:4] = lapply(lhr[1:4], function(x) x[-which(x==0)])
-
-x=lapply(fold, function(x) check_fold(x, data = states_ba, data_trans=states_trans))
-
-saveRDS(fold, "res/fold.rds")
-fold <- readRDS("res/fold.rds")
-### msm0 - Null model ####
-cv_msm0 <- cv_msm(data = states_ba, fold = fold, Q = Q, 
-                  covar_form = NULL, covar_names = NULL)
-
-### msm_c - Climate model ####
-cv_msm_c <- cv_msm(data = states_ba, fold = fold, Q = Q, 
-                   covar_form = covariates_c, covar_names = c("sTP", "sCMI"))
-
-
-### msm_s - Soil model ####
-cv_msm_s <- cv_msm(data = states_ba, fold = fold, Q = Q, 
-                   covar_form = covariates_s, covar_names = c("DRAIN","PH_HUMUS"))
-
-
-
-### msm_d - Disturbance model ####
-cv_msm_d <- cv_msm(data = states_ba, fold = fold, Q = Q, 
-                   covar_form = covariates_d, covar_names = c("natural", "logging"))
-
-
-
-### msm_glb - Complete model ####
-
-cv_msm_glb <- cv_msm(data = states_ba, fold = fold, Q = Q, 
-                     covar_form = covariates_glb, 
-                     covar_names = c("sTP", "sCMI", "DRAIN","PH_HUMUS","natural", "logging"),
-                     covinits = lhr[c(4:8)])
-
-### Save all cv models ####
-
-
-cv_msm_all75 <- list(cv_msm0 = cv_msm0, 
-                cv_msm_c = cv_msm_c, 
-                cv_msm_s = cv_msm_s, 
-                cv_msm_d = cv_msm_d, 
-                cv_msm_glb = cv_msm_glb)
-
-save(cv_msm_all75, file = "res/cv_msm_all75.rda")
+#save(msm_glb, file = "res/msm_glb85.rda")
 
 
 ### MODEL COMPARISON ####
-# rsq <- round((1 - (msm_glb$minus2loglik-msm_glb$paramdata$nopt)/msm0$minus2loglik)*100, 2)
-# 
-# lrtest.msm(msm0, msm_c, msm_s, msm_d, msm_glb)
-# AIC(msm0, msm_c, msm_s, msm_d, msm_dlag, msm_glb)
 
+# AIC
+lapply(msm_all75, AIC)
 
+# Likelihood ratio tests
+lapply(msm_all75, function(x) lrtest.msm(msm_all75$msm0, x))
 
+# Pseudo R2
+lapply(msm_all75, function(x) 1 - x$minus2loglik/msm_all75$msm0$minus2loglik) 
 
 

@@ -1,10 +1,8 @@
 ### DATA FORMATTING FOR COMMUNITY TRANSITION ####
 
 ### PACKAGES ####
-library(dplyr)
-library(reshape2)
-library(sf)
-library(data.table)
+
+source("R/functions/packages.R")
 
 
 ### DATA ####

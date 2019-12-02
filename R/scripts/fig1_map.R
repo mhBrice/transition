@@ -2,17 +2,27 @@
 ### Figure 1. REGION MAP ####
 ##################################
 
-library(sf)
-library(RColorBrewer)
-library(scales)
-library(dplyr)
-library(graphicsutils)
+source('R/functions/packages.R')
 
 source('R/functions/plot_map.R')
 
 ### DATA ####
 
-source('R/functions/prep_data.R')
+
+# ECOREGION MAP
+ecoregion <- st_read("data/ecoregion_simple.gpkg")
+ecoregion$SOUS_DOM6 <- factor(ecoregion$SOUS_DOM6, c("Sugar maple-bitternut hickory",
+                                                     "Sugar maple-basswood",
+                                                     "Sugar maple-yellow birch",
+                                                     "Balsam fir-yellow birch",
+                                                     "Balsam fir-white birch",
+                                                     "Spruce-moss"))
+
+# COORDINATES
+xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>%
+  st_transform(st_crs(ecoregion)) %>% 
+  filter(ID_PE %in% states_ba$ID_PE)
+
 
 reg_title <- c("Sugar maple-hickory &\nSugar maple-basswood",
                "Sugar maple-yellow birch",

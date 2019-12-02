@@ -1,13 +1,46 @@
-### FIGURE supp. 2 DISTURBANCE FREQUENCY #####
+### FIGURE S2. DISTURBANCE FREQUENCY #####
 
-### PACKAGES ####
-library(dplyr)
-library(scales)
-library(sf)
-library(graphicsutils)
-library(RColorBrewer)
+### PACKAGES & FUNCTIONS ####
+
+source("R/functions/packages.R")
+
+my_waffle <- function(x, nrows, ncols = 65, 
+                      pal = "Dark2", main = NULL, lgd = TRUE, ...) {
+  nd <- length(x)
+  if(nd != 1) {
+    cols <- brewer.pal(length(x), name = pal)
+  } else {
+    cols <- brewer.pal(3, name = pal)[1]
+  }
+  xx <- rep(cols, times = x)
+  lx <- length(xx)
+  
+  m <- matrix(nrow = nrows, ncol = ncols)#ncol = (lx %/% rows) + (lx %% rows != 0))
+  m[1:length(xx)] <- xx
+  
+  o <- cbind(c(row(m)), c(col(m))) + 1
+  plot0(xlim = c(0, max(o[, 2]) + 1), ylim = c(0, max(o[, 1]) + 1),
+        asp = 1, xaxs = 'i', yaxs = 'i')
+  
+  mtext(main, 3, line = .85, cex = .8, font = 2)
+  mtext(paste("n =", sum(x)), 3, line = 0, cex = .65)
+  usr <- par("usr")
+  rect(o[, 2], o[, 1], o[, 2] + .85, o[, 1] + .85, col = c(m), border = NA)
+  
+  if(lgd) {
+    lgd_pos <- which(is.na(m), arr.ind = T)[1,2]
+    legend(lgd_pos+1, mean(usr[3:4]), yjust = 0.5, cex = .8,
+           legend = paste0(names(x), " ", round(x/sum(x)*100, 2), "%"), 
+           fill = cols, border = NA,
+           bty = "n", x.intersp = .7, y.intersp = 1,
+           inset = c(0, -1), xpd = NA)
+  }
+  invisible(list(m = m, o = o))
+}
+
 
 ### DATA ####
+
 source('R/functions/prep_data.R')
 
 env_all <- readRDS("data/env_all.RDS") %>%
@@ -31,23 +64,8 @@ disturb_summ <- env_all %>%
 disturb_summ <- apply(disturb_summ[,-1], 2, sum)
 
 
-### BARPLOT ####
 
-pdf("res/figS2_disturb_bars.pdf", width = 4, height = 4)
-#quartz(width = 4, height = 4)
-par(mar = c(3,4,.5,.5))
-bp <- barplot(disturb_summ, las = 1, border = NA, axisnames = FALSE, width = .8,
-              cex.axis = .75, ylab = "Number of forest plots", cex.lab = .9)
-text(bp, -200, c("Minor", rep(c("Moderate", "Major"), 2)), xpd = NA, cex = .85,
-     adj = c(.5, 1))
-text(mean(bp[2:3]), -700, "Natural", xpd = NA, cex = .9, font = 2)
-text(mean(bp[4:5]), -700, "Logging", xpd = NA, cex = .9, font = 2)
-lines(x=bp[2:3]+c(-.2,.2), y = c(-450,-450), lwd = 2, xpd = NA)
-lines(x=bp[4:5]+c(-.2,.2), y = c(-450,-450), lwd = 2, xpd = NA)
-dev.off()
-
-
-### WAFFLE PLOTS ####
+### Frequency of the 21 original disturbance types ####
 
 log2 <- table(env_all$ORIGINE, env_all$logging)[,3][c("CBA", "CBT", "CPR", "CT")]
 nat2 <- table(env_all$ORIGINE, env_all$natural)[,3][c("BR", "ES", "CHT","DT")]
@@ -74,41 +92,8 @@ disturb_code <- list(c("Outbreak", "Windfall", "Decline", "Burn", "Ice storm"),
 
 
 
-my_waffle <- function(x, nrows, ncols = 65, 
-                      pal = "Dark2", main = NULL, lgd = TRUE, ...) {
-  nd <- length(x)
-  if(nd != 1) {
-    cols <- brewer.pal(length(x), name = pal)
-  } else {
-    cols <- brewer.pal(3, name = pal)[1]
-  }
-  xx <- rep(cols, times = x)
-  lx <- length(xx)
 
-  m <- matrix(nrow = nrows, ncol = ncols)#ncol = (lx %/% rows) + (lx %% rows != 0))
-  m[1:length(xx)] <- xx
-  
-  o <- cbind(c(row(m)), c(col(m))) + 1
-  plot0(xlim = c(0, max(o[, 2]) + 1), ylim = c(0, max(o[, 1]) + 1),
-        asp = 1, xaxs = 'i', yaxs = 'i')
-  
-  mtext(main, 3, line = .85, cex = .8, font = 2)
-  mtext(paste("n =", sum(x)), 3, line = 0, cex = .65)
-  usr <- par("usr")
-  rect(o[, 2], o[, 1], o[, 2] + .85, o[, 1] + .85, col = c(m), border = NA)
-  
-  if(lgd) {
-  lgd_pos <- which(is.na(m), arr.ind = T)[1,2]
-  legend(lgd_pos+1, mean(usr[3:4]), yjust = 0.5, cex = .8,
-         legend = paste0(names(x), " ", round(x/sum(x)*100, 2), "%"), 
-         fill = cols, border = NA,
-         bty = "n", x.intersp = .7, y.intersp = 1,
-         inset = c(0, -1), xpd = NA)
-  }
-  invisible(list(m = m, o = o))
-}
-
-
+### FIGURE S2. WAFFLE PLOTS ####
 
 lgd = c(FALSE, TRUE, TRUE, TRUE, TRUE)
 

@@ -1,12 +1,8 @@
-### TABLE SUPP. HR + CI ####
+### TABLES S4 & S5. Model baseline intensities and hazard ratios  ####
 
 ### PACKAGES ####
-library(graphicsutils)
-library(dplyr)
-library(msm)
 
-library(knitr)
-library(kableExtra)
+source("R/functions/packages.R")
 
 ### DATA ####
 
@@ -15,8 +11,10 @@ source('R/functions/prep_data.R')
 # Load msm results
 
 load("res/msm_all75.rda")
+# load("res/msm_glb85.rda")
 
 msm_glb <- msm_all75[["msm_glb"]]
+
 
 ### FORMAT DATA FRAME ####
 
