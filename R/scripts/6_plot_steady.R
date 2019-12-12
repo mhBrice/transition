@@ -51,11 +51,11 @@ dfn <- expand.grid(sTP = tp_grad, natural = c(0, 1, 2),
 
 # Initial observed state proportion
 
-init <- states_ba %>% 
+init <- states_ba %>% filter(ecoreg3 == "Mixed") %>%
   group_by(ID_PE) %>% 
   arrange(year_measured) %>% 
   slice(1) %>% filter(year_measured<15)
-init <- table(states_ba$states_ba[states_ba$year_measured<10])
+init <- table(init$states_ba)
 init <- init/sum(init)
 
 dld <- list(c(mu_ecotone), 
