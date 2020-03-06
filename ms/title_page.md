@@ -9,7 +9,7 @@ header-includes:
 
 ---
 
-# Moderate disturbances accelerate forest transition dynamics under climate change at the temperate-boreal ecotone
+# Moderate disturbances accelerate forest transition dynamics under climate change in the temperate-boreal ecotone of eastern North America
 
 ## List of authors  {-}
 

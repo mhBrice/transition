@@ -103,7 +103,7 @@ mtext(letters[2], 3, adj = -.17)
 x=plot_ss(mod = msm_glb, df = dfl, tp_ecotone = tp_ecotone, 
                dist = "logging",
                unscale = sc_sTP,
-               ylab = NULL, xlab = "Mean temperature of the growing season",
+               ylab = NULL, xlab = "Mean temperature of the growing season (°C)",
                main = "Logging")
 mtext(letters[3], 3, adj = -.17)
 

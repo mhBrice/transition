@@ -18,6 +18,7 @@ states_ba <- states_ba %>%
   mutate_at(vars(logging:natural), factor)
 
 sc_sTP <- c(attr(states_ba$sTP, "scaled:center"), attr(states_ba$sTP, "scaled:scale"))
+sc_sCMI <- c(attr(states_ba$sCMI, "scaled:center"), attr(states_ba$sCMI, "scaled:scale"))
 
 states_ba <- states_ba %>% mutate_if(is.matrix, as.vector)
 

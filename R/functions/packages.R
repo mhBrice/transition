@@ -1,6 +1,7 @@
 ### Load all packages
 
 library(msm)
+library(labdsv)
 
 library(diagram)
 library(graphicsutils)

@@ -1,0 +1,22 @@
+Package: transitions
+Type: Tutorial
+Title: Analyses Of Forest Transitions
+Version: 0.0.1
+Authors@R: c(
+  person("Marie-Helene", "Brice", role = c("aut", "cre"), email = "mariehbrice@outlook.com")
+  )
+Imports:
+  msm,
+  scales,
+  RColorBrewer,
+  diagram,
+  data.table,
+  dplyr,
+  reshape2,
+  sf,
+  knitr,
+  kableExtra,
+  DescTools,
+  scoring
+Remotes:
+  inSileco/graphicsutils

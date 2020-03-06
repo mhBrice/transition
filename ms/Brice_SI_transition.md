@@ -23,19 +23,19 @@ header-includes:
 ## Multi-state models
 
 For states $r,s \in {B, M, P, T}$ and time $t, \Delta{t} >= 0$, transition probabilities
-($p_{rs}$) are defined as the probability that a plot in state $r$ at time $t$
+($a_{rs}$) are defined as the probability that a plot in state $r$ at time $t$
 is in state $s$ at time $t + \Delta{t}$ and can be written as:
 
-$$P_{r,s}(t + \Delta{t}) = P(S_{t + \Delta{t}} = s | S_{t} = r)\text{.}$$
+$$A_{r,s}(t + \Delta{t}) = A(S_{t + \Delta{t}} = s | S_{t} = r)\text{.}$$
 
 In a four-state transition model, the transition probability matrix $P(t +
-\Delta{t})$, hereafter simplified to $P(t)$, is a 4 $\times$ 4 matrix, where the
+\Delta{t})$, hereafter simplified to $A(t)$, is a 4 $\times$ 4 matrix, where the
 rows are the current states and the columns the future states, containing the
-transition probabilities $p_{rs}(t)$ for a specified time interval. For a
-time-homogeneous model, $P(t)$ is solved by taking the matrix exponential of
+transition probabilities $a_{rs}(t)$ for a specified time interval. For a
+time-homogeneous model, $A(t)$ is solved by taking the matrix exponential of
 the intensity matrix $Q$ scaled by the time interval:
 
-$$P(t) = e^{tQ}\text{.}$$
+$$A(t) = e^{tQ}\text{.}$$
 
 The intensity matrix $Q$ contains transition intensities $q_{r,s}$ which
 represent the instantaneous risk of moving from state $r$ to state $s$:
@@ -69,7 +69,7 @@ Estimation of model parameters can be obtained by maximising the log-likelihood
 function using the transition probability matrix. The contribution of plot
 $i$ at time $j$ to the likelihood is given by:
 
-$$LL_i(\theta | s,x) = \prod\limits_{j=1}^{J} P(S_j=s_j|S_{j-1}=s_{j-1},\theta,x)\text{,}$$
+$$LL_i(\theta | s,x) = \prod\limits_{j=1}^{J} A(S_j=s_j|S_{j-1}=s_{j-1},\theta,x)\text{,}$$
 
 where $\theta$ is the vector with all model parameters, $x$ denotes the
 vector with the covariate values, and $s$ denotes the observed state trajectory
@@ -316,23 +316,35 @@ Temperate - Temperate & -0.018\newline (-0.022, -0.015) & \cellcolor{white}{ } &
 | sf       |                | Manipulation and mapping of spatial data   | @pebesma_simple_2018 |
 | pROC     | multiclass.roc | Compute multi-class AUC              | @robin_proc_2011 |
 | scoring  | logscore       | Compute logarithmic score            | @merkle_choosing_2013 |
+| labdsv   | indval         | Calculates the indicator value       | @roberts_labdsv_2019 |
 
 
 \pagebreak
 
 # Supplementary figures
 
-![Temporal trends in growing season temperatures (top) and annual climate moisture index (bottom). Grey lines represent averaged climate values across the 10,388 studied forest plots. Straight black lines show the fitted least-squared linear regression lines.](res/figS1_clim_trend.pdf)
+![Waffle charts representing the frequency of forest plots by disturbance type (natural disturbances and logging), level of severity (minor, moderate, major) and vegetation zone (boreal, ecotone and temperate). One square is one occurrence of a disturbance in a forest plot (a forest plot can be disturbed more than once). In each chart (except for the no or minor disturbances), the colours represent the 21 original disturbance types recorded in the field surveys. ](res/figS1_waffle.png)
+
+\pagebreak
+
+![Histograms of time intervals between surveys by bioclimatic domains.](res/figS2_hist_intervals.pdf)
+
+\pagebreak
+
+![Temporal trends in growing season temperatures (top) and annual climate moisture index (bottom). Grey lines represent averaged climate values across the 10,388 studied forest plots. Straight black lines show the fitted least-squared linear regression lines.](res/figS3_clim_trend.pdf)
 
 
 \pagebreak
 
-![Waffle charts representing the frequency of forest plots by disturbance type (natural disturbances and logging) and level of intensity (minor, moderate, major). One square is one forest plot. In each chart (except for the no or minor disturbances), the colours represent the 21 original disturbance types recorded in the field surveys. ](res/figS2_waffle.png)
+
+![Predicted proportion of temperate species in forest plots (temperate / (boreal + temperate)) measured in basal area using a negative binomial GLM with polynomial terms of two climate variables, temperature and climate moisture index during the growing season (R^2^ = 50%).](res/figS4_predBT.pdf)
+
 
 \pagebreak
 
 
-![Performance comparisons of the five candidate multi-state models using multi-class area under the curve (mAUC; a) and logarithmic skill score (LS; b) obtained through 10-fold cross-validation. Higher values of mean pairwise AUC (a) indicate a better capacity to discriminate between pairs of the four forest states: (B)oreal, (M)ixed, (P)ioneer and (T)emperate. The overall mAUC of each model is given next to the legend. Lower values of mean state-specific logarithmic scores (b) indicate better prediction accuracy for each of the four forest states. The overall logarithmic score of each model is given next to the legend.](res/figS3_cv.pdf)
+
+![Performance comparisons of the five candidate multi-state models using multi-class area under the curve (mAUC; a) and logarithmic skill score (LS; b) obtained through 10-fold cross-validation. Higher values of mean pairwise AUC (a) indicate a better capacity to discriminate between pairs of the four forest states: (B)oreal, (M)ixed, (P)ioneer and (T)emperate. The overall mAUC of each model is given next to the legend. Lower values of mean state-specific logarithmic scores (b) indicate better prediction accuracy for each of the four forest states. The overall logarithmic score of each model is given next to the legend.](res/figS5_cv.pdf)
 
 Model evaluation using 10-fold cross-validation revealed that including climate
 and disturbances improved overall model predictive performances, while soil
@@ -345,24 +357,39 @@ help to distinguish Pioneer from the other states, especially Boreal.
 
 \pagebreak
 
-![Probability of transition between forest states through time for natural disturbances (left) and logging (right) and for different levels (line type) as predicted by the best multi-state model. All other covariates are fixed at the average conditions found in the ecotone, i.e. the balsam fir-yellow birch domain.](res/figS4_proba.pdf)
-
-\pagebreak
-
-![State contribution to forest turnover (see Fig. 7a,b in main text) along the temperature (latitudinal) gradient for different disturbance scenarios: minor (solid), moderate (dashed) and major (dotted) disturbances for both natural (a,c,e) and logging (b,d,f). All other covariates are fixed at the average conditions found in the ecotone, i.e. the balsam fir-yellow birch domain, to focus solely on the effect of disturbances along the temperature gradient. The turnover time of a state (or sojourn time) measures the time spent in this state before transitioning to the next. Long turnover time can translate to large resistance. Here, at any point along the gradient, state turnover time is scaled by the steady state distribution and the sum of all scaled state turnover gives the the turnover time of the transition matrix. The colors at the top of the plots approximate the position of the bioclimatic domains.](res/figS5_contrib2turnover.pdf)
-
-\pagebreak
-
-![State contribution to forest entropy (see Fig. 7c,d in main text) along the temperature (latitudinal) gradient for different disturbance scenarios: minor (solid), moderate (dashed) and major (dotted) disturbances for both natural (a,c,e) and logging (b,d,f). All other covariates are fixed at the average conditions found in the ecotone, i.e. the balsam fir-yellow birch domain, to focus solely on the effect of disturbances along the temperature gradient. The entropy of a state measures the incertitude of its next transition. Here, at any point along the gradient, state entropy is scaled by the steady state distribution and the sum of all scaled state entropy gives the the entropy of the transition matrix. The colors at the top of the plots approximate the position of the bioclimatic domains.](res/figS6_contrib2entropy.pdf)
+![Probability of transition between forest states through time for natural disturbances (left) and logging (right) and for different levels (line type) as predicted by the best multi-state model. All other covariates are fixed at the average conditions found in the ecotone, i.e. the balsam fir-yellow birch domain.](res/figS6_proba.pdf)
 
 
 \pagebreak
 
-![Change in tree basal area for temperate (red) and boreal (blue) species by transition type. Forest plots on the right have seen an increase in the basal area of one of the two groups, whereas forest plots on the left have seen a decrease in basal area. These changes in basal area are the underlying causes of the state transitions. For instance, transitions to Pioneer are mainly caused by losses of tree basal area, while transitions from Pioneer are dominated by gains in basal area. The transitions from Mixed to Temperate states is a result of both gains in temperate species and losses in boreal species.](res/figS7_deltaTB.pdf)
 
+![Predicted change in 10-year transition probabilities for different disturbance types and levels. All other covariates are fixed at the average conditions found in the ecotone. Letters correspond to the four forest states: (B)oreal, (M)ixed, (P)ioneer and (T)emperate. Numbers are the modelled transition probabilities from rows to columns and darker colour indicates higher transition probability.](res/figS7_pmatrix.pdf)
+
+The largest values across most matrices were generally associated with
+self-transitions (matrix diagonal), meaning that the vast majority of forest
+plots remained in the same state after 10 years. At minor disturbances, the
+self-transitions were very strong but transitions from Pioneer to Boreal and
+from Mixed to Temperate were also important. At moderate disturbances,
+probabilities of self-transitions decreased, while transitions from Boreal to
+Pioneer, and from Mixed to Temperate increased the most. Transitions from Mixed
+and Temperate to Pioneer did not increase much at moderate disturbances, likely
+because such disturbances were less frequent and less severe than in Boreal
+forests. The difference between natural disturbances and logging was conspicuous
+only for major disturbances. For both types of major disturbances, the
+transition probabilities to Pioneer showed a great increase compared to moderate
+disturbances, but these values exploded in the major logging transition matrix,
+exceeding self-transitions.
 
 \pagebreak
 
+![State contribution to forest turnover (see Fig. 7a,b in main text) along the temperature (latitudinal) gradient for different disturbance scenarios: minor (solid), moderate (dashed) and major (dotted) disturbances for both natural (a,c,e) and logging (b,d,f). All other covariates are fixed at the average conditions found in the ecotone, i.e. the balsam fir-yellow birch domain, to focus solely on the effect of disturbances along the temperature gradient. The turnover time of a state (or sojourn time) measures the time spent in this state before transitioning to the next. Long turnover time can translate to large resistance. Here, at any point along the gradient, state turnover time is scaled by the steady state distribution and the sum of all scaled state turnover gives the the turnover time of the transition matrix. The colors at the top of the plots approximate the position of the bioclimatic domains.](res/figS8_contrib2turnover.pdf)
+
+\pagebreak
+
+![State contribution to forest entropy (see Fig. 7c,d in main text) along the temperature (latitudinal) gradient for different disturbance scenarios: minor (solid), moderate (dashed) and major (dotted) disturbances for both natural (a,c,e) and logging (b,d,f). All other covariates are fixed at the average conditions found in the ecotone, i.e. the balsam fir-yellow birch domain, to focus solely on the effect of disturbances along the temperature gradient. The entropy of a state measures the incertitude of its next transition. Here, at any point along the gradient, state entropy is scaled by the steady state distribution and the sum of all scaled state entropy gives the the entropy of the transition matrix. The colors at the top of the plots approximate the position of the bioclimatic domains.](res/figS9_contrib2entropy.pdf)
+
+
+\pagebreak
 
 
 

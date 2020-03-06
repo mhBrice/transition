@@ -118,7 +118,7 @@ mtext("f", 3, adj = .97, line = -1.2, cex = 0.9)
 
 par(mar = c(.1,.5,.7,.5))
 plot0()
-mtext("Mean temperature of the growing season", 3, line = -1, cex = 0.9)
+mtext("Mean temperature of the growing season (°C)", 3, line = -1, cex = 0.9)
 
 legend("bottom", legend = c("Minor", "Moderate", "Major"), cex = 1.15,
        col = "black", horiz = TRUE, inset = c(0,-.2),
@@ -191,7 +191,7 @@ for(s in 1:4) {
 
 par(mar = c(0,.5,0,.5))
 plot0()
-text(0, .25,"Mean temperature of the growing season", cex = 1.3, xpd = NA)
+text(0, .25,"Mean temperature of the growing season (°C)", cex = 1.3, xpd = NA)
 legend(0, .1, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
        col = "black", horiz = TRUE,
        lty = 1:3, lwd = 1.4,
@@ -245,7 +245,7 @@ for(s in 1:4) {
 
 par(mar = c(0,.5,0,.5))
 plot0()
-text(0, .25,"Mean temperature of the growing season", cex = 1.3, xpd = NA)
+text(0, .25,"Mean temperature of the growing season (°C)", cex = 1.3, xpd = NA)
 legend(0, .1, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
        col = "black", horiz = TRUE,
        lty = 1:3, lwd = 1.4,
