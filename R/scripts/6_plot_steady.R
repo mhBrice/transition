@@ -81,7 +81,7 @@ SS <- rbind(init, do.call(rbind, SS))
 
 mat <- matrix(c(4,4,4,5,1:3,5), 4)
 
-pdf("res/fig6_steady.pdf", width = 3.6, height = 7)
+pdf("res/fig5_steady.pdf", width = 3.6, height = 7)
 #quartz(width = 3.6, height = 7.2)
 
 layout(mat, widths = c(0.08, 1), heights = c(1,1,1,0.2))
@@ -118,7 +118,7 @@ mtext("State proportion at equilibrium", 2, line = -2, cex =.85)
 
 par(mar = c(0,2.2,0,0.2))
 plot0()
-legend("bottom", legend = c("Minor", "Moderate", "Major"), cex = 1.1,
+legend("bottom", legend = c("No or minor", "Moderate", "Major"), cex = 1.1,
        col = c("grey75","grey45","grey15"), lty = 1:3, lwd = 1.5, 
        seg.len = 2, x.intersp = 0.9,
        horiz = TRUE, bty = "n")

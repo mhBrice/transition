@@ -7,7 +7,6 @@ pandoc ms/title_page.md -o ms/reviews/title_page.pdf --pdf-engine=xelatex
 
 pandoc ms/Brice_ms_transition.md -o ms/submission/Brice_ms_transition.pdf --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
 
-pandoc ms/Brice_ms_transition.md -f markdown -t latex -s -o ms/Brice_ms_transition.tex --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
 
 pandoc ms/Brice_ms_transition.md -o ms/submission/Brice_ms_transition.docx  --bibliography=../references.bib --csl ms/GCB.csl
 
@@ -25,4 +24,8 @@ pandoc ms/reviews/response2reviews.md -o ms/reviews/response2reviews.pdf  --bibl
 
 pandoc ms/Brice_SI_transition.md -o ms/reviews/Brice_SI_transition.pdf --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
 
-pandoc ms/Brice_ms_transition.md -o ms/reviews/Brice_ms_transition.pdf  --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
+pandoc ms/Brice_ms_transition.md -o ms/reviews/round2/Brice_ms_transition.pdf  --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
+
+pandoc ms/Brice_ms_transition.md -o ms/reviews/round2/Brice_ms_transition.docx  --bibliography=../references.bib --csl ms/GCB.csl
+
+pandoc ms/reviews/round2/reviews_round2.md -o ms/reviews/round2/reviews_round2.docx --bibliography=../references.bib --csl ms/GCB.csl

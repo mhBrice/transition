@@ -20,7 +20,7 @@ id_plantation <- sp_ba$ID_PE[which(sp_ba$PICABI>0 | sp_ba$PINSYL > 0)]
 sp_ba <- sp_ba %>%
   filter(ID_PE %in% env_all$ID_PE) %>% # keep same site as env_all
   filter(!(ID_PE %in% id_plantation)) %>% # remove remaining site with planted tree species
-  group_by(plot_id) %>% arrange(year_measured) %>%
+  group_by(ID_PE) %>% arrange(year_measured) %>%
   filter(n()>1) %>% ungroup() # remove plots that were sample only once
 
 
@@ -95,8 +95,8 @@ states_ba$states_ba85[which(sp_ba$TOTAL <= 5)] <- "Pioneer"
 # Order
 
 states_ba <- states_ba %>%
-  arrange(plot_id, year_measured) %>%
-  distinct(plot_id, year_measured, .keep_all = T)
+  arrange(ID_PE, year_measured) %>%
+  distinct(ID_PE, year_measured, .keep_all = T)
 
 # In msm, observed states should be numeric variables or factors called "1","2",...
 states_ba$states_num <- as.factor(states_ba$states_ba)
@@ -106,8 +106,6 @@ states_ba$states_num85 <- as.factor(states_ba$states_ba85)
 levels(states_ba$states_num85) <- c("1","2","3","4")
 
 
-saveRDS(states_ba, "data/states_ba.RDS")
-
 
 
 ### ENVIRONMENT ####
@@ -116,7 +114,7 @@ saveRDS(states_ba, "data/states_ba.RDS")
 
 states_envba <- states_ba %>%
   left_join(env_all, by = c("ID_PE", "ID_PE_MES", "plot_id", "year_measured")) %>%
-  arrange(plot_id, year_measured) %>%
+  arrange(ID_PE, year_measured) %>%
   mutate_at(vars(logging:natural), factor)
 
 ### SELECT & SUBSET ####

@@ -98,14 +98,14 @@ dev.off()
 
 ### FIGURE 5. PLOT TRANSITION MATRIX #####
 
-dist_title <- c("Minor", "Moderate natural", "Major natural", 
+dist_title <- c("No or minor", "Moderate natural", "Major natural", 
                 "Moderate logging", "Major logging")
 
 mat <- matrix(c(0,1,1,0,
                 2,2,4,4,
                 3,3,5,5),3,byrow = T)
 
-pdf("res/fig5_pmatrix.pdf", width = 4.2, height = 6.2)
+pdf("res/figS7_pmatrix.pdf", width = 4.2, height = 6.2)
 #quartz(width = 4.2, height = 6.2)
 layout(mat)
 par(mar=c(.5,2,3.5,1))
@@ -125,7 +125,7 @@ mat <- matrix(c(0:14,0,0,15,15,0), 5, 4)
 mat <- rbind(mat, c(0,16,16,0))
 
 
-pdf("res/figS4_proba.pdf",
+pdf("res/figS6_proba.pdf",
     width = 7, height = 7)
 #quartz(width = 7, height = 7)
 layout(mat, widths = c(.6,1,1,.45), heights = c(.17,1,1,1,1,.2))
@@ -155,7 +155,8 @@ par(mar=c(5,0,4,0))
 plot0()
 legend("top", legend = states, title = "Transition to", 
        col = st_col, cex = 1.1, lwd = 1.3, bty = "n")
-legend("bottom", legend = c("Minor", "Moderate", "Major"), title = "Disturbance", 
+legend("bottom", legend = c("No or minor", "Moderate", "Major"), 
+       title = "Disturbance", 
        col = "grey15", cex = 1.1, lwd = 1.3, lty = 1:3, bty = "n")
 
 par(mar=c(0,0,1,0))

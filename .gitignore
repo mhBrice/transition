@@ -48,5 +48,6 @@ vignettes/*.pdf
 # large files
 res/cv_msm_all75.rda
 submission/
+reviews/
 ms/collab_comments.md
 R/old

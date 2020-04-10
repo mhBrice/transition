@@ -61,7 +61,7 @@ transients_nat <- transient_index(mod = msm_glb, df = dfn)
 mat <- matrix(c(1:8),4)
 mat <- rbind(mat, c(9,9))
 
-pdf("res/fig7_transients.pdf", width = 5.5, height = 6.8)
+pdf("res/fig6_transients.pdf", width = 5.5, height = 6.8)
 #quartz(width = 5.5, height = 6.8)
 
 layout(mat, heights = c(.12,1,1,1,.21), widths = c(1,1))
@@ -120,7 +120,7 @@ par(mar = c(.1,.5,.7,.5))
 plot0()
 mtext("Mean temperature of the growing season (°C)", 3, line = -1, cex = 0.9)
 
-legend("bottom", legend = c("Minor", "Moderate", "Major"), cex = 1.15,
+legend("bottom", legend = c("No or minor", "Moderate", "Major"), cex = 1.15,
        col = "black", horiz = TRUE, inset = c(0,-.2),
        lty = 1:3, lwd = 1.4,
        xpd = NA, bty = "n", yjust=.5, seg.len = 2.2)
@@ -138,7 +138,7 @@ mat <- matrix(c(1:10), 5)
 mat <- rbind(mat, c(11, 11))
 
 
-pdf("res/figS5_contrib2turnover.pdf", width = 5.5, height = 6.8)
+pdf("res/figS8_contrib2turnover.pdf", width = 5.5, height = 6.8)
 #quartz(width = 5.5, height = 6.8)
 
 par(oma = c(0,2,0,0))
@@ -192,7 +192,7 @@ for(s in 1:4) {
 par(mar = c(0,.5,0,.5))
 plot0()
 text(0, .25,"Mean temperature of the growing season (°C)", cex = 1.3, xpd = NA)
-legend(0, .1, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
+legend(0, .1, legend = c("No or minor", "Moderate", "Major"), cex = 1.1,
        col = "black", horiz = TRUE,
        lty = 1:3, lwd = 1.4,
        xpd = NA, bty = "n", xjust = 0.5, seg.len = 2.2)
@@ -203,7 +203,7 @@ dev.off()
 
 ### FIGURE S6. State ontribution to entropy ####
 
-pdf("res/figS6_contrib2entropy.pdf", width = 5.5, height = 6.8)
+pdf("res/figS9_contrib2entropy.pdf", width = 5.5, height = 6.8)
 #quartz(width = 5.5, height = 6.8)
 
 par(oma = c(0,2,0,0))
@@ -246,7 +246,7 @@ for(s in 1:4) {
 par(mar = c(0,.5,0,.5))
 plot0()
 text(0, .25,"Mean temperature of the growing season (°C)", cex = 1.3, xpd = NA)
-legend(0, .1, legend = c("Minor", "Moderate", "Major"), cex = 1.1,
+legend(0, .1, legend = c("No or minor", "Moderate", "Major"), cex = 1.1,
        col = "black", horiz = TRUE,
        lty = 1:3, lwd = 1.4,
        xpd = NA, bty = "n", xjust = 0.5, seg.len = 2.2)
