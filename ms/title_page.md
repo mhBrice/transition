@@ -34,16 +34,6 @@ Marie-Hélène Brice
 
 - email: marie-helene.brice@umontreal.ca
 
-## Running title
+## Running title {-}
 
 Forest transitions under climate change
-
-## Graphical abstract
-
-We investigate how recent climate change, disturbances and soil conditions have
-influenced forest transition dynamics at the temperate-boreal ecotone. Our study
-reveals that moderate disturbances are likely to accelerate forest responses to
-climate change by promoting transitions from mixed to temperate forests. While
-major disturbances merely favour a dominance by pioneer forests, moderate
-disturbances induce a clear directional shift toward temperate forests,
-promoting a northward shift of the boreal-temperate ecotone.

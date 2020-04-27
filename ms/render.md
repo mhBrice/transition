@@ -22,10 +22,15 @@ pandoc ms/GCB_submission_checklist.md -o ms/submission/GCB_submission_checklist.
 
 pandoc ms/reviews/response2reviews.md -o ms/reviews/response2reviews.pdf  --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
 
-pandoc ms/Brice_SI_transition.md -o ms/reviews/Brice_SI_transition.pdf --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
+pandoc ms/Brice_SI_transition.md -o ms/reviews/round2/Brice_SI_transition.pdf --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
 
 pandoc ms/Brice_ms_transition.md -o ms/reviews/round2/Brice_ms_transition.pdf  --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
 
+pandoc ms/Brice_ms_transition.md -o ms/reviews/round2/Brice_ms_transition.tex  --bibliography=../references.bib --csl ms/GCB.csl
+
 pandoc ms/Brice_ms_transition.md -o ms/reviews/round2/Brice_ms_transition.docx  --bibliography=../references.bib --csl ms/GCB.csl
 
-pandoc ms/reviews/round2/reviews_round2.md -o ms/reviews/round2/reviews_round2.docx --bibliography=../references.bib --csl ms/GCB.csl
+pandoc ms/reviews/round2/reviews_round2.md -o ms/reviews/round2/revision2.pdf --bibliography=../references.bib --csl ms/GCB.csl --pdf-engine=xelatex
+
+
+pandoc ms/reviews/round2/table2.tex -o ms/reviews/round2/table2.docx

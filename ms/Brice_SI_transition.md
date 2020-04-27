@@ -18,6 +18,15 @@ header-includes:
     - \renewcommand\thetable{S\arabic{table}}
     - \usepackage{setspace}
 ---
+
+\begin{center}
+{\Large Moderate disturbances accelerate forest transition dynamics under climate change in the temperate-boreal ecotone of eastern North America}
+\end{center}
+
+\begin{center}
+{\large Marie-Hélène Brice, Steve Vissault, Willian Vieira, Dominique Gravel, Pierre Legendre, Marie-Josée Fortin}
+\end{center}
+
 # Supplementary Methods
 
 ## Multi-state models
