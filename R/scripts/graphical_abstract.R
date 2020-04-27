@@ -39,7 +39,7 @@ dfl <- expand.grid(sTP = tp_grad, logging = c(0, 1, 2),
 
 # Plot 
 
-png("res/graphical_abstract.png", width = 5.5, height = 3.4, unit = "in", res = 300)
+png("res/graphical_abstract.png", width = 5.5, height = 3.4, unit = "in", res = 600)
 #quartz(width = 5.5, height = 3.4)
 layout(matrix(c(1,2),1), widths = c(1,.3))
 par(mar=c(3.3,2.9,1.2,.5))
