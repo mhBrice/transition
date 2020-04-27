@@ -77,19 +77,19 @@ plot_transient(index = matrix(transients_nat$soj_comm, ncol = 3),
                tp_grad = tp_grad, tp_ecotone = tp_ecotone, 
                ylab = "Turnover time (y)", 
                unscale = sc_sTP, axes = 2, ylim = c(0,350))
-mtext("a", 3, adj = .97, line = -1.2, cex = 0.9)
+mtext("(a)", 3, adj = .97, line = -1.2, cex = 0.8, font = 2)
 
 plot_transient(index = matrix(transients_nat$entropy_comm, ncol = 3), 
                tp_grad = tp_grad, tp_ecotone = tp_ecotone,
                ylab = "Entropy", 
                unscale = sc_sTP, axes = 2, ylim = c(0,.9))
-mtext("c", 3, adj = .97, line = -1.2, cex = 0.9)
+mtext("(c)", 3, adj = .97, line = -1.2, cex = 0.8, font = 2)
 
 plot_transient(index = matrix(transients_nat$halflife, ncol = 3), 
                tp_grad = tp_grad, tp_ecotone = tp_ecotone,
                ylab = "Half-life to equilibrium (y)",
                unscale = sc_sTP, ylim = c(0,180))
-mtext("e", 3, adj = .97, line = -1.2, cex = 0.9)
+mtext("(e)", 3, adj = .97, line = -1.2, cex = 0.8, font = 2)
 
 # Metrics for logging
 
@@ -101,18 +101,18 @@ plot_transient(index = matrix(transients_log$soj_comm, ncol = 3),
                tp_grad = tp_grad, tp_ecotone = tp_ecotone, 
                axes = NULL,
                unscale = sc_sTP, ylim = c(0,350))
-mtext("b", 3, adj = .97, line = -1.2, cex = 0.9)
+mtext("(b)", 3, adj = .97, line = -1.2, cex = 0.8, font = 2)
 
 plot_transient(index = matrix(transients_log$entropy_comm, ncol = 3), 
                tp_grad = tp_grad, tp_ecotone = tp_ecotone,
                unscale = sc_sTP, axes = NULL, ylim = c(0,.9))
-mtext("d", 3, adj = .97, line = -1.2, cex = 0.9)
+mtext("(d)", 3, adj = .97, line = -1.2, cex = 0.8, font = 2)
 
 plot_transient(index = matrix(transients_log$halflife, ncol = 3), 
                tp_grad = tp_grad, tp_ecotone = tp_ecotone,
                axes = 1,
                unscale = sc_sTP,  ylim = c(0,180))
-mtext("f", 3, adj = .97, line = -1.2, cex = 0.9)
+mtext("(f)", 3, adj = .97, line = -1.2, cex = 0.8, font = 2)
 
 # Axis & Legend
 

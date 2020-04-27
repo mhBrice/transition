@@ -81,14 +81,14 @@ SS <- rbind(init, do.call(rbind, SS))
 
 mat <- matrix(c(4,4,4,5,1:3,5), 4)
 
-pdf("res/fig5_steady.pdf", width = 3.6, height = 7)
-#quartz(width = 3.6, height = 7.2)
+pdf("res/fig5_steady.pdf", width = 3.5, height = 7)
+#quartz(width = 3.5, height = 7.2)
 
-layout(mat, widths = c(0.08, 1), heights = c(1,1,1,0.2))
-par(mar = c(2,2.2,1,0.2), oma = c(0,0,0.1,0))
+layout(mat, widths = c(0.07, 1), heights = c(1,1,1,0.2))
+par(mar = c(2,2,1.4,0.2), oma = c(0,0,0.1,0))
 
 barplot_index(index = SS, ylim = c(0,1))
-mtext(letters[1], 3, adj = -.17)
+mtext(paste0("(", letters[1],")"), 3, adj = 0, line = .2, font = 2, cex = .8)
 
 # Steady state for natural disturbances
 
@@ -96,7 +96,7 @@ x=plot_ss(mod = msm_glb, df = dfn, tp_ecotone = tp_ecotone,
                dist = "natural",
                unscale = sc_sTP, axes = 2, 
                xlab = NULL, ylab = NULL, main = "Natural")
-mtext(letters[2], 3, adj = -.17)
+mtext(paste0("(", letters[2],")"), 3, adj = 0, line = 0.2, font = 2, cex = .8)
 
 # Steady state for logging
 
@@ -105,14 +105,14 @@ x=plot_ss(mod = msm_glb, df = dfl, tp_ecotone = tp_ecotone,
                unscale = sc_sTP,
                ylab = NULL, xlab = "Mean temperature of the growing season (°C)",
                main = "Logging")
-mtext(letters[3], 3, adj = -.17)
+mtext(paste0("(", letters[3],")"), 3, adj = 0, line = 0.2, font = 2, cex = .8)
 
 
 # Axis
 
 par(mar = c(1,0,1.5,0))
 plot0()
-mtext("State proportion at equilibrium", 2, line = -2, cex =.85)
+mtext("State proportion at equilibrium", 2, line = -1.5, cex =.85)
 
 # Legend
 

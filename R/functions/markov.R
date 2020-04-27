@@ -75,7 +75,7 @@ plot_ss <- function(mod, df, tp_ecotone = NULL, dist = "logging",
   mtext(xlab, 1, line = 2.1, cex = 0.85)
   mtext(ylab, 2, line = 2.1, cex = 0.85)
   
-  mtext(main, 3, line = .2, font = 2, cex = .85, adj = 0)
+  mtext(main, 3, line = .2, font = 2, cex = .85, adj = .1)
   mtext("Boreal", 3, line = -1.3, col = col_bb, cex = cex.st, adj = 0.02)
   mtext("Temperate", 3, line = -1.3, col = col_tt, cex = cex.st, adj = 0.98)
 

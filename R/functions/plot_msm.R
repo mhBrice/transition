@@ -92,6 +92,10 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
       axis(2, tcl= -0.2, labels=F, col = "grey35")
       axis(2, las=1, cex.axis = .8)
     }
+    
+    # Letters
+    # l <- which(i == trans)
+    # mtext(paste0("(",letters[l], ")"), 3, line = -1, adj = 0.05, font = 2, cex = 0.7)
   }
   
   # Labels

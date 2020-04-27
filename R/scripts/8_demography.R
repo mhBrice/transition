@@ -198,7 +198,7 @@ seqy = seq(0, 1, len = ncol(tab))
 
 
 
-png("res/fig7_demo_trans.png", width = 7, height = 6, units = "in", res = 300)
+png("res/fig7_demo_trans.png", width = 7, height = 6, units = "in", res = 600)
 #quartz(width = 7, height = 6)
 par(mar=c(2.5, 8, .2, .2))
 image(tab[,28:1], col = (pal), axes = F)

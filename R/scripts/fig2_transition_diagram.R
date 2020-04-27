@@ -62,7 +62,7 @@ pm$arr$TextX[5] <- pm$arr$TextX[5]-.01
 pm$arr$TextX[10] <- pm$arr$TextX[10]+.01
 text(pm$arr$TextX, pm$arr$TextY, paste0(pm$arr$Value, "%"), cex = .9)
 
-mtext(letters[1], 3, line = -2, adj = .1)
+mtext(paste0("(", letters[1], ")"), 3, line = -2, adj = .1, cex = .8, font = 2)
 
 par(mar=c(0,0,0,0))
 plot0(xlim = c(0,9), ylim = c(1,9), xpd = NA, yaxs = "i")
@@ -71,7 +71,7 @@ lines(c(1,1), c(1.5,8.5))
 lines(c(9,9), c(1.5,8.5))
 text(rep(c(2,4,6,8),4),rep(c(8,6,4,2),ea=4), qmat_expres, cex = .9)
 
-mtext(letters[2], 3, line = -.8, adj = .05)
+mtext(paste0("(", letters[2], ")"), 3, line = -1.2, adj = .05, cex = .8, font = 2)
 
 par(mar=c(0,.2,0,0))
 plot0(0:5)
@@ -79,7 +79,7 @@ text(2.5,3.7, expression(atop(q[rs]==q[rs.0]%*%exp(beta[rs.1]%*%climate+beta[rs.
 
 text(2.5,1.7, expression(atop(q[rs]==q[rs.0]%*%exp(beta[rs.3]%*%disturbances), "for"~s==Pioneer)), cex = .9, adj = .5)
 
-mtext(letters[3], 3, line = -.8, adj = 0.02)
+mtext(paste0("(", letters[3], ")"), 3, line = -1.2, adj = 0.02, cex = .8, font = 2)
 
 dev.off()
 
