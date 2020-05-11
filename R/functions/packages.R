@@ -18,6 +18,4 @@ library(knitr)
 library(kableExtra)
 library(latex2exp)
 
-#library(DescTools)
-
 library(scoring)

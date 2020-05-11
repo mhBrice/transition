@@ -19,7 +19,7 @@ source('R/functions/prep_data.R')
 rownames(trans_nb) <- colnames(trans_nb) <- states
 
 
-kable(addmargins(trans_nb), format="latex", align = "c", booktabs = T, linesep = "") %>% 
+kable(addmargins(trans_nb), format="latex", align = "c", booktabs = T, linesep = "") %>%
   column_spec(1, bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
@@ -38,24 +38,24 @@ qmat <- c("-sum(q[Bs], s!=B)","q[BM]", "q[BP]", 0,
 .expressions <- qmat
 qmat_expres <- parse(text = .expressions)
 
-pos.box <- cbind (c(0.5, 0.2, 0.8, 0.5), 
+pos.box <- cbind (c(0.5, 0.2, 0.8, 0.5),
                   c(0.85, 0.5, 0.5, 0.15))
 
-mat <- matrix(c(1,1,2,3),2, byrow = T)
- 
+mat <- matrix(c(1,1,2,3),2, byrow = TRUE)
+
 pdf("res/fig2_trans_diagram.pdf", width=6.5, height=5)
 #quartz(width=6.5, height=5)
 layout(mat, heights = c(1,.6), widths = c(.75,1))
 par(mar=c(0.2,3.7,0,3.7))
 
-pm <- plotmat(trans_perc, pos = pos.box, curve = 0.07, name = states, 
+pm <- plotmat(trans_perc, pos = pos.box, curve = 0.07, name = states,
               lwd = 1.2, relsize = .9,
               box.cex = 1, cex.txt = 0, txt.col = "white", dtext = .45, txt.font = 2,
               box.lwd = 0.1, box.type = "rect", shadow.size = 0.005,
               box.prop = 0.4, box.size = 0.1, box.col = st_col,
-              arr.length=.12, arr.width=.12,  arr.type ="triangle",
-              arr.col ="grey40", arr.lcol = "grey40", 
-              self.cex = 0.6, self.lwd = 1.2, 
+              arr.length=.12, arr.width=.12, arr.type ="triangle",
+              arr.col ="grey40", arr.lcol = "grey40",
+              self.cex = 0.6, self.lwd = 1.2,
               self.shifty = c(.07,0,0,-.07), self.shiftx = c(0,-.14,.14,0),
               self.arrpos = c(-1,0,3,.5))
 pm$arr$TextX[5] <- pm$arr$TextX[5]-.01

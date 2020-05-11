@@ -14,7 +14,7 @@ states_ba1 <- states_ba %>% group_by(ID_PE) %>% slice(n())
 ## GLM with quasibinomial family for proportion ####
 
 states_ba1$prop = states_ba1$Temperate/states_ba1$tot_TB
-glmBT <- glm(prop ~ poly(sTP, 3) + poly(sCMI, 3) + sTP:sCMI, data = states_ba1, 
+glmBT <- glm(prop ~ poly(sTP, 3) + poly(sCMI, 3) + sTP:sCMI, data = states_ba1,
              family = quasibinomial)
 
 
@@ -27,7 +27,7 @@ summary(glmBT)
 tp <- seq(quantile(states_ba1$sTP, .1), quantile(states_ba1$sTP, .9), len = 100)
 cmi <- seq(quantile(states_ba1$sCMI, .1), quantile(states_ba1$sCMI, .9), len = 100)
 
-predBT <- predict(glmBT, newdata = data.frame(expand.grid(sTP = tp, sCMI = cmi)), 
+predBT <- predict(glmBT, newdata = data.frame(expand.grid(sTP = tp, sCMI = cmi)),
                  type = "response")
 
 
@@ -42,9 +42,9 @@ pdf("res/figS_predBT.pdf", width = 4, height = 4)
 
 #quartz(width = 4, height = 4)
 par(mar = c(2.8,3.5,2.8,.5))
-image(x = cmi, y = tp, 
+image(x = cmi, y = tp,
       z = t(matrix(predBT, ncol = length(cmi), nrow = length(tp))),
-      xlab = "", ylab = "", col = pal(100), breaks = pal_br, 
+      xlab = "", ylab = "", col = pal(100), breaks = pal_br,
       las = 1, axes = F)
 box2()
 axis(1, labels = FALSE, tcl = -.4)
@@ -53,7 +53,7 @@ axis(2, labels = FALSE, tcl = -.4)
 axis(2, tick = FALSE, line = -.2, cex.axis = 0.8, las = 1)
 # points(x= states_ba1$sCMI* sc_sCMI[2] + sc_sCMI[1], y = states_ba1$sTP*sc_sTP[2] + sc_sTP[1],
 #        cex = .1, pch = 20, col = alpha("grey15",.3), xpd = FALSE)
-contour(x = cmi, y = tp, 
+contour(x = cmi, y = tp,
         z = t(matrix(predBT, ncol = length(cmi), nrow = length(tp))),
         cex = 1, add = TRUE)
 
@@ -74,8 +74,8 @@ xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>%
 
 map = eigenmap(x=st_coordinates(xy), boundaries = c(0,1000))
 plot(map)
-mca1 = MCA(Y = as.matrix(states_ba1[,c("Temperate", "Boreal")]), 
-           X = as.matrix(states_ba1[,c("sTP", "sCMI")]), 
+mca1 = MCA(Y = as.matrix(states_ba1[,c("Temperate", "Boreal")]),
+           X = as.matrix(states_ba1[,c("sTP", "sCMI")]),
            emobj = map)
 
 mca1_partest <- test.cdp(mca1)
@@ -83,7 +83,7 @@ mca1_partest
 summary(mca1_partest)
 par(mar = c(6,4,2,4))
 plot(mca1_partest, las = 3)
-mca1_pertest <- permute.cdp(mca1, permute=999)
+mca1_pertest <- permute.cdp(mca1, permute = 999)
 
 
 

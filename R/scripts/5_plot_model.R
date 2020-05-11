@@ -32,36 +32,36 @@ mu_ecotone <- as.list(apply(states_ba[ll_ecotone, c("sTP", "sCMI", "DRAIN", "PH_
 
 
 # Lists of covariates with varying disturbance levels
-covar_nat <- list(c(mu_ecotone), 
+covar_nat <- list(c(mu_ecotone),
                   c(natural1 = 1, mu_ecotone),
                   c(natural2 = 1, mu_ecotone))
 
-covar_log <- list(c(mu_ecotone), 
+covar_log <- list(c(mu_ecotone),
                   c(logging1 = 1, mu_ecotone),
                   c(logging2 = 1, mu_ecotone))
 
 
-covar <- list(c(mu_ecotone), 
+covar <- list(c(mu_ecotone),
               c(natural1 = 1, mu_ecotone),
-              c(natural2 = 1, mu_ecotone), 
+              c(natural2 = 1, mu_ecotone),
               c(logging1 = 1, mu_ecotone),
               c(logging2 = 1, mu_ecotone))
 
 # Probability matrix
-p_list <- lapply(covar, 
-                 function(x) pmatrix.msm(msm_glb, t = 10, 
-                                         covariates = as.list(x), 
+p_list <- lapply(covar,
+                 function(x) pmatrix.msm(msm_glb, t = 10,
+                                         covariates = as.list(x),
                                          ci = "normal"))
 
 
 ### TABLE 2. MODEL RESULTS ####
 
 
-stats_msm <- lapply(msm_all75, 
+stats_msm <- lapply(msm_all75,
                     function(x) c("Covariates" = NA,
                                   "Number of parameters" = x$paramdata$npars-length(x$fixedpars),
-                                  "-2 Log-likelihood" = round(x$minus2loglik,1), 
-                                  "Delta AIC" = round(AIC(x)-AIC(msm_all75$msm_glb),1), 
+                                  "-2 Log-likelihood" = round(x$minus2loglik,1),
+                                  "Delta AIC" = round(AIC(x)-AIC(msm_all75$msm_glb),1),
                                   "LR test" = NA)) %>%
   do.call(rbind,.) %>% as.data.frame(.)
 
@@ -76,16 +76,16 @@ stats_msm <- stats_msm[order(stats_msm$`Delta AIC`, decreasing = TRUE),]
 stats_msm$`LR test` <- c("---", rep("< 0.001", 4))
 
 kable(stats_msm, format = "latex",
-      booktabs = T, linesep = "") %>% 
-  column_spec(1, bold = TRUE) %>% 
-  row_spec(c(0,5), bold = TRUE) 
+      booktabs = T, linesep = "") %>%
+  column_spec(1, bold = TRUE) %>%
+  row_spec(c(0,5), bold = TRUE)
 
 
 ### FIGURE 4. PLOT COEFFICIENTS BEST MODEL ####
 
-varnames <- c("Temperature", "CMI", 
-              "Drainage", "pH", 
-              "Natural 1", "Natural 2", 
+varnames <- c("Temperature", "CMI",
+              "Drainage", "pH",
+              "Natural 1", "Natural 2",
               "Logging 1", "Logging 2")
 
 pdf("res/fig4_HR.pdf",
@@ -98,7 +98,7 @@ dev.off()
 
 ### FIGURE 5. PLOT TRANSITION MATRIX #####
 
-dist_title <- c("No or minor", "Moderate natural", "Major natural", 
+dist_title <- c("No or minor", "Moderate natural", "Major natural",
                 "Moderate logging", "Major logging")
 
 mat <- matrix(c(0,1,1,0,
@@ -114,7 +114,7 @@ for(i in 1:length(p_list)) {
   tr <- tr[["estimates"]]
   #dimnames(tr) <- list(states,states)
   if(i == 1) labels = TRUE else labels = FALSE
-  plot_trans(pmat=tr, states_lab = c("B", "M", "P", "T"), 
+  plot_trans(pmat=tr, states_lab = c("B", "M", "P", "T"),
              labels = labels, main = dist_title[i])
 }
 dev.off()
@@ -153,10 +153,10 @@ mtext("Probability of transition", 2, line = -9.8, outer = T, cex= .75, font =2)
 # Legend
 par(mar=c(5,0,4,0))
 plot0()
-legend("top", legend = states, title = "Transition to", 
+legend("top", legend = states, title = "Transition to",
        col = st_col, cex = 1.1, lwd = 1.3, bty = "n")
-legend("bottom", legend = c("No or minor", "Moderate", "Major"), 
-       title = "Disturbance", 
+legend("bottom", legend = c("No or minor", "Moderate", "Major"),
+       title = "Disturbance",
        col = "grey15", cex = 1.1, lwd = 1.3, lty = 1:3, bty = "n")
 
 par(mar=c(0,0,1,0))

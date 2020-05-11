@@ -1,9 +1,7 @@
 ### DATA FORMATTING FOR COMMUNITY TRANSITION ####
 
-### PACKAGES ####
-
+### PACKAGES ### 
 source("R/functions/packages.R")
-
 
 ### DATA ####
 
@@ -20,21 +18,21 @@ env_data <- env_data %>%
 
 # Ecoregion
 
-ecoreg_df <- readRDS("data/ecoreg_df_nov19.RDS") %>% 
+ecoreg_df <- readRDS("data/ecoreg_df_nov19.RDS") %>%
   filter(ID_PE %in% env_data$ID_PE)
 
 # Spatial
 
-xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>% 
+xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>%
   filter(ID_PE %in% env_data$ID_PE)
 st_crs(xy) <- 32198
 
 # Climate
 
 # 10-year average
-bioclim10 <- readRDS("data/bioclim_roll10_nov2019.RDS") %>% 
-  filter(ID_PE %in% env_data$ID_PE) %>% 
-  left_join(env_data[,1:4], by = c("ID_PE", "year" = "year_measured")) %>%
+bioclim10 <- readRDS("data/bioclim_roll10_nov2019.RDS") %>%
+  filter(ID_PE %in% env_data$ID_PE) %>%
+  left_join(env_data[, 1:4], by = c("ID_PE", "year" = "year_measured")) %>%
   ungroup()
 
 ###########################
@@ -49,8 +47,8 @@ bioclim10 <- readRDS("data/bioclim_roll10_nov2019.RDS") %>%
 
 # Join to other climate variables
 
-bioclim <- bioclim10 %>% 
-  mutate(sCMI = rowSums(select(., "cmi_05":"cmi_09"))) %>% 
+bioclim <- bioclim10 %>%
+  mutate(sCMI = rowSums(select(., "cmi_05":"cmi_09"))) %>%
   select(ID_PE, ID_PE_MES, plot_id, year_measured = year,
          sTP = sg_15, sCMI)
 
@@ -64,22 +62,22 @@ bioclim <- bioclim10 %>%
 # Disturbance
 
 env_data <- env_data %>%
-  mutate(major_logging = 
+  mutate(major_logging =
            ifelse(is.na(ORIGINE2) | ORIGINE2!="logging", 0, 2),
-         minor_logging = 
+         minor_logging =
            ifelse(is.na(PERTURB2) | PERTURB2!="partial_logging", 0, 1)) %>%
   mutate(logging = major_logging + minor_logging) %>%
-  mutate(major_natural = 
+  mutate(major_natural =
            ifelse(is.na(ORIGINE2) | ORIGINE2=="logging", 0, 2),
-         minor_natural = 
+         minor_natural =
            ifelse(is.na(PERTURB2) | PERTURB2=="partial_logging", 0, 1)) %>%
   mutate(natural = major_natural + minor_natural) %>%
   mutate_at(vars(logging, natural), ~ifelse(.>2, 2, .)) %>%
-  select(-c(starts_with('major_'), starts_with('minor'), ORIGINE2, PERTURB2)) 
+  select(-c(starts_with('major_'), starts_with('minor'), ORIGINE2, PERTURB2))
 
 env_data <- env_data %>% group_by(plot_id) %>%
-  arrange(year_measured) %>% 
-  mutate_at(vars(logging, natural), lead) %>% 
+  arrange(year_measured) %>%
+  mutate_at(vars(logging, natural), lead) %>%
   tidyr::replace_na(list(logging = 0, natural = 0))
 
 ################################
@@ -89,9 +87,9 @@ env_data <- env_data %>% group_by(plot_id) %>%
 # Drainage
 
 env_data$DRAIN <- factor(env_data$CL_DRAI2,
-                          levels = c("excessif", "rapide", 
+                          levels = c("excessif", "rapide",
                                      "bon", "modere",
-                                     "imparfait", "mauvais", 
+                                     "imparfait", "mauvais",
                                      "tres_mauvais", "complexe"),
                           ordered = T)
 levels(env_data$DRAIN) <- c("1","1", "2", "3","4","5","6","4")
@@ -100,7 +98,7 @@ env_data$DRAIN <- as.numeric(env_data$DRAIN)
 
 # Humus
 env_data$TYPEHUMUS <- factor(env_data$TYPEHUMUS,
-                             levels = c("MU", "MD", "MR", 
+                             levels = c("MU", "MD", "MR",
                                         "TO", "AN", "SO", "NA"))
 
 env_data <- env_data %>% group_by(plot_id) %>%

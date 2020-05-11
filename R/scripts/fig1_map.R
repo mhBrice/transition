@@ -1,12 +1,13 @@
 ##################################
-### Figure 1. REGION MAP ####
+####  Figure 1. REGION MAP   #####
 ##################################
 
 source('R/functions/packages.R')
-
 source('R/functions/plot_map.R')
 
 ### DATA ####
+
+source('R/functions/prep_data.R')
 
 
 # ECOREGION MAP
@@ -20,7 +21,7 @@ ecoregion$SOUS_DOM6 <- factor(ecoregion$SOUS_DOM6, c("Sugar maple-bitternut hick
 
 # COORDINATES
 xy <- st_read("data/plot_xy32198_nov2019.gpkg") %>%
-  st_transform(st_crs(ecoregion)) %>% 
+  st_transform(st_crs(ecoregion)) %>%
   filter(ID_PE %in% states_ba$ID_PE)
 
 

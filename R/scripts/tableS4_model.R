@@ -28,7 +28,7 @@ signif <- function(coef){
   x <- ifelse(coef[,2] <= 1 & coef[,3] <= 1 | coef[,2] >= 1 & coef[,3] >= 1, TRUE, FALSE)
   x[is.na(x)] <- FALSE
   x
-} 
+}
 
 est_signif <- lapply(est[-c(1:4)], signif)
 est_signif
@@ -54,7 +54,7 @@ msm_res[msm_res == "1\n(NA, NA)"] <- "1.000"
 
 options(knitr.kable.NA = '')
 
-msm_res %>% 
+msm_res %>%
   mutate_at(-1, function(x) linebreak(x, align = "c")) %>%
   mutate(Temperature = cell_spec(Temperature, "latex", background = ifelse(est_signif$sTP, "#cccccc", "white"), escape = FALSE)) %>%
   mutate(CMI = cell_spec(CMI, "latex", background = ifelse(est_signif$sCMI, "#cccccc", "white"), escape = FALSE)) %>%
@@ -67,7 +67,7 @@ msm_res %>%
   mutate(Logging2 = cell_spec(Logging2, "latex", background = ifelse(est_signif$logging2, "#cccccc", "white"), escape = FALSE)) %>%
   kable(format = "latex", booktabs = T, linesep = "", escape = FALSE, align = "lccccccccc") %>%
   kable_styling(font_size = 6.8) %>%
-  column_spec(1, bold = T) %>%
+  column_spec(1, bold = TRUE) %>%
   column_spec(2, width = "1.9cm") %>%
   column_spec(3:10, width = "1.8cm") %>%
   row_spec(0, bold = TRUE)

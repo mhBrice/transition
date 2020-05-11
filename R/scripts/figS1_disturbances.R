@@ -3,7 +3,6 @@
 ### PACKAGES & FUNCTIONS ####
 
 source("R/functions/packages.R")
-
 source("R/functions/my_waffle.R")
 
 ### DATA ####
@@ -15,10 +14,10 @@ env_all <- readRDS("data/env_all.RDS") %>%
   mutate_at(vars(logging:natural), factor)
 
 env_all <- env_all %>% group_by(ID_PE) %>%
-  arrange(year_measured) %>% 
+  arrange(year_measured) %>%
   mutate_at(vars(ORIGINE, PERTURB), lead)
 
-env_all1 <- env_all %>% 
+env_all1 <- env_all %>%
   group_by(ID_PE) %>%
   arrange(year_measured) %>%
   slice(1)
@@ -27,15 +26,15 @@ reg <- aggregate(env_all1$ID_PE_MES, by = list(env_all1$ecoreg3), length)
 
 ### Frequency of disturbances ####
 
-disturb_summ <- env_all %>% 
-  group_by(ID_PE, ecoreg3) %>% 
+disturb_summ <- env_all %>%
+  group_by(ID_PE, ecoreg3) %>%
   summarise("Minor" = all(natural==0 & logging==0),
             "Moderate natural" = any(natural==1),
             "Major natural" = any(natural==2),
             "Moderate logging" = any(logging==1),
-            "Major logging" = any(logging==2)) 
+            "Major logging" = any(logging==2))
 
-disturb_summ <- aggregate(disturb_summ[,-c(1:2)], by=list(disturb_summ$ecoreg3), sum)
+disturb_summ <- aggregate(disturb_summ[, -c(1:2)], by=list(disturb_summ$ecoreg3), sum)
 
 
 
@@ -59,8 +58,8 @@ lapply(disturb_types,sum)
 
 disturb_code <- list(c("Outbreak", "Windfall", "Decline", "Burn", "Ice storm"),
                      c("Burn", "Outbreak", "Windfall", "Decline"),
-                     c("Partial cut", "Commercial thinning", "Strip cut", 
-                       "Selection cut", "Diameter-limit cut", 
+                     c("Partial cut", "Commercial thinning", "Strip cut",
+                       "Selection cut", "Diameter-limit cut",
                        "Partial cut + outbreak", "Improvement cut", "Checkerboard cut"),
                      c("Clearcut", "Cut with protection\nof regeneration",
                        "Final strip cut", "Strip cut"))
@@ -79,40 +78,40 @@ png("res/figS1_waffle.png", width = 5.5, height = 6.5, units = "in", res = 600)
 
 #quartz(width = 5.5, height = 6.5)
 par(oma=c(0,0,0,0))
-layout(matrix(c(1:25,0,26:28,0), 6, byrow = TRUE), 
-       heights = c(1, rep(.72, 4), .155), 
+layout(matrix(c(1:25,0,26:28,0), 6, byrow = TRUE),
+       heights = c(1, rep(.72, 4), .155),
        widths = c(.8, rep(.9,3), 1))
 
 for(i in 1:length(disturb_types)) {
   d <- disturb_types[[i]]
   if(i!=1) colnames(d) <- disturb_code[[i-1]]
   nrows <- ifelse(i==1, 60, 42)
- 
+
   par(mar = c(0,0,.2,.1))
   plot0()
-  mtext(names(disturb_types[i]), 3, line = -2, 
+  mtext(names(disturb_types[i]), 3, line = -2,
         cex = .65, font = 2, xpd = NA)
   mtext(paste0("n = ", sum(d)), 3, line = -3, cex = .55)
-  
+
   for(r in 1:3) {
-    if(is.null(dim(d))) { 
-      dr <- d[r] 
-    }else { 
+    if(is.null(dim(d))) {
+      dr <- d[r]
+    }else {
       dr <- d[r,]
       }
     my_waffle(dr, nrows = nrows, ncols = 40, cols = disturb_col[[i]],
               main = "", lgd = FALSE)
 
   }
- 
+
   plot0()
   if(i>1)
     legend(-1, 0, xjust = 0, yjust = .5, cex = .8,
-           legend = rev(names(dr)), 
+           legend = rev(names(dr)),
            fill = rev(disturb_col[[i]]), border = NA,
            bty = "n", x.intersp = .7, y.intersp = 1,
            inset = c(0, -1), xpd = NA)
-  
+
 }
 par(mar = c(0,0,0,0))
 plot0()

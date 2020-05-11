@@ -8,6 +8,7 @@ Authors@R: c(
 Imports:
   msm,
   scales,
+  graphicsutils,
   RColorBrewer,
   diagram,
   data.table,
@@ -16,7 +17,6 @@ Imports:
   sf,
   knitr,
   kableExtra,
-  DescTools,
   scoring
 Remotes:
   inSileco/graphicsutils

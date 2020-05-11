@@ -4,7 +4,7 @@ This repository includes the data and R scripts to reproduce the analyses and fi
 
 ## Installation
 
-The analyses were carried out with [R (a free software environment for statistical computing and graphics)](https://www.r-project.org/) and require the installation of a recent version of it.
+The analyses were carried out with [R (a free software environment for statistical computing and graphics)](https://www.r-project.org/) and require the installation of a recent version of it (>=3.5).
 
 Analyses were reproduced in MacOSX Catalina.
 
@@ -47,30 +47,26 @@ loaded via a namespace (and not attached):
 
 The following packages must be installed:
 
-- msm
-- scoring
-- data.table
-- dplyr
-- reshape2
-- sf
-- knitr
-- kableExtra
-- scales
-- RColorBrewer
-- diagram
-- [graphicsutils](https://github.com/inSileco/graphicsutils) (not on CRAN)
+- [`msm`](https://CRAN.R-project.org/package=msm)
+- [`scoring`](https://CRAN.R-project.org/package=scoring)
+- [`data.table`](https://CRAN.R-project.org/package=data.table)
+- [`dplyr`](https://CRAN.R-project.org/package=dplyr)
+- [`reshape2`](https://CRAN.R-project.org/package=reshape2)
+- [`sf`](https://CRAN.R-project.org/package=sf)
+- [`knitr`](https://CRAN.R-project.org/package=knitr)
+- [`kableExtra`](https://CRAN.R-project.org/package=kableExtra)
+- [`scales`](https://CRAN.R-project.org/package=scales)
+- [`RColorBrewer`](https://CRAN.R-project.org/package=RColorBrewer)
+- [`diagram`](https://CRAN.R-project.org/package=diagram)
+- [graphicsutils](https://github.com/inSileco/graphicsutils) (on GitHub)
 
 Below are the R commands to install them all:
 
 ```R
-install.packages(
-  "msm", "scoring",
-  "data.table", "dplyr",  "reshape2",  "sf",
-  "scales", "RColorBrewer", "diagram",
-  "knitr", "kableExtra", "remotes"
-)
-remotes::install_github("inSileco/graphicsutils")
+install.packages("devtools")
+devtools::install_deps()
 ```
+
 
 
 ## Guidelines
