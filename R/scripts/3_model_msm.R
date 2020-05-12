@@ -10,7 +10,7 @@ source("R/functions/cross_validation.R")
 
 source('R/functions/prep_data.R')
 
-# states_ba$states_num=states_ba$states_num85
+# To test another state threshold -> states_ba$states_num=states_ba$states_num85
 (st_table <- statetable.msm(states_num, plot_id, data = states_ba))
 
 ### Q matrix with allowed transition ####
@@ -40,9 +40,9 @@ Q.crude  <- crudeinits.msm(states_num ~ year_measured, plot_id, data=states_ba, 
 ### Null model ####
 
 msm0 <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
-                 qmatrix = Q, 
+                 qmatrix = Q,
                  gen.inits = TRUE,
-                 obstype = 1, 
+                 obstype = 1,
                  control = list(trace = 1, maxit = 5000, fnscale = 30800),
                  opt.method = "optim")
 
@@ -52,11 +52,11 @@ msm0 <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
 covariates_c <- make_forms(covar = c("sTP", "sCMI"), covar_p = ~1)
 
 msm_c <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
-             qmatrix = Q, 
-             gen.inits=TRUE,
-             obstype = 1, 
-             control = list(trace=1, maxit=5000, fnscale=37000),
-             opt.method = "optim", 
+             qmatrix = Q,
+             gen.inits = TRUE,
+             obstype = 1,
+             control = list(trace = 1, maxit = 5000, fnscale = 37000),
+             opt.method = "optim",
              covariates = covariates_c)
 
 
@@ -67,11 +67,11 @@ covariates_s <- make_forms(covar = c("DRAIN","PH_HUMUS"), covar_p = ~1)
 
 
 msm_s <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
-             qmatrix = Q, 
-             gen.inits=TRUE,
-             obstype = 1, 
-             control = list(trace=1, maxit=5000, fnscale=38000),
-             opt.method = "optim", 
+             qmatrix = Q,
+             gen.inits = TRUE,
+             obstype = 1,
+             control = list(trace = 1, maxit = 5000, fnscale = 38000),
+             opt.method = "optim",
              covariates = covariates_s)
 
 
@@ -81,11 +81,11 @@ msm_s <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
 covariates_d <- make_forms(covar = c("natural", "logging"))
 
 msm_d <- msm(states_num ~ year_measured, subject = plot_id, data = states_ba,
-              qmatrix = Q, 
-              gen.inits=TRUE,
-              obstype = 1, 
-              control = list(trace=1, maxit=5000, fnscale=38000),
-              opt.method = "optim", 
+              qmatrix = Q,
+              gen.inits = TRUE,
+              obstype = 1,
+              control = list(trace = 1, maxit = 5000, fnscale = 38000),
+              opt.method = "optim",
               covariates = covariates_d)
 
 
@@ -96,22 +96,22 @@ covariates_glb <- make_forms(covar = c("sTP", "sCMI", "DRAIN", "PH_HUMUS", "natu
            covar_p = c("natural", "logging"))
 
 
-msm_glb <- msm(states_num ~ year_measured, subject = plot_id, 
+msm_glb <- msm(states_num ~ year_measured, subject = plot_id,
                data = states_ba,
-               qmatrix = Q, 
+               qmatrix = Q,
                gen.inits = TRUE,
-               obstype = 1, 
-               control = list(trace=1, maxit=5000, fnscale=36000),
-               opt.method = "optim", 
+               obstype = 1,
+               control = list(trace = 1, maxit = 5000, fnscale = 36000),
+               opt.method = "optim",
                covariates = covariates_glb)
 
 
 ### Save all models ####
 
-msm_all75 <- list(msm0 = msm0, 
-                msm_c = msm_c, 
-                msm_s = msm_s, 
-                msm_d = msm_d, 
+msm_all75 <- list(msm0 = msm0,
+                msm_c = msm_c,
+                msm_s = msm_s,
+                msm_d = msm_d,
                 msm_glb = msm_glb)
 save(msm_all75, file = "res/msm_all75.rda")
 #save(msm_glb, file = "res/msm_glb85.rda")
@@ -126,6 +126,4 @@ lapply(msm_all75, AIC)
 lapply(msm_all75, function(x) lrtest.msm(msm_all75$msm0, x))
 
 # Pseudo R2
-lapply(msm_all75, function(x) 1 - x$minus2loglik/msm_all75$msm0$minus2loglik) 
-
-
+lapply(msm_all75, function(x) 1 - x$minus2loglik/msm_all75$msm0$minus2loglik)

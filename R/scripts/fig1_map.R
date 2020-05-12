@@ -35,14 +35,14 @@ reg_title <- c("Sugar maple-hickory &\nSugar maple-basswood",
 #                "Sapinière à bouleau jaune",
 #                "Sapinière à bouleau blanc", "Pessière à mousse")
 
-col_reg <- brewer.pal(6,"Spectral")[c(1,1:3,5,6)]
+col_reg <- brewer.pal(6,"Spectral")[c(1, 1:3, 5, 6)]
 
 n_reg <- table(states_ba$ecoreg6)
 
-#png("res/fig1_region.png", width = 4.3, height = 2.4, res = 300, units = "in")
+
 pdf("res/fig1_region.pdf", width = 4.3, height = 2.4)
-# quartz(width = 4.3, height = 2.4)
-par(mar=c(1.5,2.1,.3,0.3))
+
+par(mar=c(1.5, 2.1, .3, 0.3))
 
 plot_map(ecoregion, col_reg = alpha(col_reg,.4), xy_pts = xy)
 

@@ -1,6 +1,6 @@
 #### MODEL VALIDATION #####
 
-# Figure S3
+# Figure S5
 
 ### PACKAGES & FUNCTIONS ####
 
@@ -161,7 +161,7 @@ logscore_cv <-logscore_glb_cv <- list()
 for(cv in names_cvmod) {
   tmp <- cv_pred_valid[[cv]]
 
-  logscore_f <-logscore_glb_f <-  c()
+  logscore_f <- logscore_glb_f <-  c()
 
   for(f in 1:n_fold) {
     to <- model.matrix(~tmp[[f]]$to + 0)
@@ -195,15 +195,14 @@ logscore_summ <- unlist(lapply(logscore_glb_cv, mean))
 st_auc <- gsub("[^A-Z/]", "", colnames(pair_auc_summ$cv_msm0))
 
 pdf("res/figS3_cv.pdf", width = 7.7, height = 3.2)
-#quartz(width = 7.7, height = 3.2)
-par(mfrow = c(1,2),mar = c(1.5, 2.5, .5, .3))
+
+par(mfrow = c(1, 2),mar = c(1.5, 2.5, .5, .3))
 plot_score(pair_auc_summ, states = st_auc,
-           ylab = "Pairwise AUCs", stats = gener_auc_summ, ylim = c(.8,1))
-mtext("a",3, adj = -.11, line = -.5)
+           ylab = "Pairwise AUCs", stats = gener_auc_summ, ylim = c(.8, 1))
+mtext("a", 3, adj = -.11, line = -.5)
 plot_score(logscore_cv, states = c("B", "M", "P", "T"),
            ylab = expression("Logarithmic Score [0,"*infinity*"["),
-           ylim = c(0.14,.38),
+           ylim = c(0.14, .38),
            stats = signif(logscore_summ, 3), text.width = 1.2)
-mtext("b",3, adj = -.11, line = -.5)
+mtext("b", 3, adj = -.11, line = -.5)
 dev.off()
-

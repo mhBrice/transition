@@ -1,6 +1,6 @@
-# Paper: Moderate disturbances accelerate forest transition dynamics under climate change at the temperate-boreal ecotone
+# Paper: Moderate disturbances accelerate forest transition dynamics under climate change in the temperate-boreal ecotone of eastern North America
 
-This repository includes the data and R scripts to reproduce the analyses and figures found in the article *Moderate disturbances accelerate forest transition dynamics under climate change at the temperate-boreal ecotone* by Brice, Vissault, Vieira, Gravel, Legendre and Fortin submitted to Global Ecology and Biogeography.
+This repository includes the data and R scripts to reproduce the analyses and figures found in the article *Moderate disturbances accelerate forest transition dynamics under climate change in the temperate-boreal ecotone of eastern North America* by Brice, Vissault, Vieira, Gravel, Legendre and Fortin published in Global Ecology and Biogeography. https://doi.org/10.1111/gcb.15143  
 
 ## Installation
 
@@ -76,6 +76,14 @@ available in the [Quebec_data
 repository](https://github.com/mhBrice/Quebec_data). The rest of the data
 manipulations are performed directly in this repository:
 
+You can reproduce the complete pipeline using (though some steps are very long to run):
+
+```R
+source("R/scripts/0_pipeline.R")
+```
+
+You can also run the scripts step by step.
+
 1. You can reproduce all the steps to tidy data:
 
 ```R
@@ -83,19 +91,19 @@ source("R/scripts/1_dataFormatting_env.R")
 source("R/scripts/2_dataFormatting_transition.R")
 ```
 
-2. Then, run the multi-state model:
+2. Then, run the multi-state model (time-consuming step):
 
 ```R
 source("R/scripts/3_model_msm.R")
 ```
 
-3. The cross-validation of the candidate models takes a fair amount of time, and this step is not necessary for the other scripts to work. but you may run:
+3. The cross-validation of the candidate models takes a large amount of time, and this step is not necessary for the other scripts to work. But you may run:
 
 ```R
 source("R/scripts/4_msm_valid.R")
 ```
 
-4. Then, figures of the main text (as well as fig. SX) are obtained as follow:
+4. Then, figures of the main text (as well as some supplementary figures) are obtained as follow:
 
 ```R
 source("R/scripts/fig1_map.R")
@@ -104,17 +112,20 @@ source("R/scripts/fig3_baseline.R")
 source("R/scripts/5_plot_model.R")
 source("R/scripts/6_plot_steady.R")
 source("R/scripts/7_plot_transient.R")
+source("R/scripts/8_demography.R")
 ```
 
 5. Finally, run the following scripts to obtain supplementary figures and tables S1 and S4:
 
 ```R
-source("R/scripts/fig_S1_clim_trend.R")
-source("R/scripts/fig_S2_disturbances.R")
-source("R/scripts/figS7_deltaTB.R")
+source("R/scripts/fig_S1_disturbances.R")
+source("R/scripts/fig_S2_time_interval.R")
+source("R/scripts/fig_S3_clim_trend.R")
+source("R/scripts/fig_S4_predTB.R")
 
 source("R/scripts/tableS1_speciesGr.R")
 source("R/scripts/tableS4_model.R")
 ```
+
 
 Figures and tables are saved in [res](https://github.com/mhBrice/transition/tree/master/res).

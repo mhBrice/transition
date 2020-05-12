@@ -38,9 +38,9 @@ dfl <- expand.grid(sTP = tp_grad, logging = c(0, 1, 2),
 # Plot
 
 png("res/graphical_abstract.png", width = 5.5, height = 3.4, unit = "in", res = 600)
-#quartz(width = 5.5, height = 3.4)
-layout(matrix(c(1,2),1), widths = c(1,.3))
-par(mar=c(3.3,2.9,1.2,.5))
+
+layout(matrix(c(1, 2), 1), widths = c(1, .3))
+par(mar = c(3.3, 2.9, 1.2, .5))
 plot_ss(mod = msm_glb, df = dfl, tp_ecotone = tp_ecotone,
         dist = "logging", cex.axis = .8, cex.st = .9,
         unscale = sc_sTP,
@@ -59,6 +59,7 @@ legend("topleft", legend = c("No or minor", "Moderate", "Major"),
        seg.len = 2.8, x.intersp = 0.9, inset = c(-.03,0), bty = "n")
 
 mtext("Current ecotone", 1, line = -5, font = 2, cex = .87, at = -1.1, adj = 0, xpd = NA)
-polygon(x = c(-1,.8,.8,-1), y = c(-.2,-.2,-.6,-.6),
+polygon(x = c(-1, .8, .8, -1), y = c(-.2, -.2, -.6, -.6),
         col = alpha("grey", .2), border = NA)
+        
 dev.off()

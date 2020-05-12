@@ -1,3 +1,4 @@
+### Proportion of temperate/boreal species vs climate ####
 
 ### PACKAGES & FUNCTIONS ####
 
@@ -37,11 +38,10 @@ cmi <- cmi * sc_sCMI[2] + sc_sCMI[1]
 pal_br <- seq(0, 1, .01)
 
 
-### Figure S ####
-pdf("res/figS_predBT.pdf", width = 4, height = 4)
+### Figure S4 ####
+pdf("res/figS4_predBT.pdf", width = 4, height = 4)
 
-#quartz(width = 4, height = 4)
-par(mar = c(2.8,3.5,2.8,.5))
+par(mar = c(2.8, 3.5, 2.8, .5))
 image(x = cmi, y = tp,
       z = t(matrix(predBT, ncol = length(cmi), nrow = length(tp))),
       xlab = "", ylab = "", col = pal(100), breaks = pal_br,
@@ -51,8 +51,7 @@ axis(1, labels = FALSE, tcl = -.4)
 axis(1, tick = FALSE, line = -.2, cex.axis = 0.8)
 axis(2, labels = FALSE, tcl = -.4)
 axis(2, tick = FALSE, line = -.2, cex.axis = 0.8, las = 1)
-# points(x= states_ba1$sCMI* sc_sCMI[2] + sc_sCMI[1], y = states_ba1$sTP*sc_sTP[2] + sc_sTP[1],
-#        cex = .1, pch = 20, col = alpha("grey15",.3), xpd = FALSE)
+
 contour(x = cmi, y = tp,
         z = t(matrix(predBT, ncol = length(cmi), nrow = length(tp))),
         cex = 1, add = TRUE)
@@ -62,6 +61,7 @@ mtext("Temperate/(Boreal + Temperate)", side = 3, line = .5)
 
 mtext("Temperature", side = 2, cex = 1, font = 2, line = 2.5)
 mtext("CMI", side = 1, cex = 1, font = 2, line = 1.8)
+
 dev.off()
 
 
@@ -84,7 +84,3 @@ summary(mca1_partest)
 par(mar = c(6,4,2,4))
 plot(mca1_partest, las = 3)
 mca1_pertest <- permute.cdp(mca1, permute = 999)
-
-
-
-

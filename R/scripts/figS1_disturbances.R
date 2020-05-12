@@ -28,11 +28,11 @@ reg <- aggregate(env_all1$ID_PE_MES, by = list(env_all1$ecoreg3), length)
 
 disturb_summ <- env_all %>%
   group_by(ID_PE, ecoreg3) %>%
-  summarise("Minor" = all(natural==0 & logging==0),
-            "Moderate natural" = any(natural==1),
-            "Major natural" = any(natural==2),
-            "Moderate logging" = any(logging==1),
-            "Major logging" = any(logging==2))
+  summarise("Minor" = all(natural == 0 & logging == 0),
+            "Moderate natural" = any(natural == 1),
+            "Major natural" = any(natural == 2),
+            "Moderate logging" = any(logging == 1),
+            "Major logging" = any(logging == 2))
 
 disturb_summ <- aggregate(disturb_summ[, -c(1:2)], by=list(disturb_summ$ecoreg3), sum)
 
@@ -41,9 +41,9 @@ disturb_summ <- aggregate(disturb_summ[, -c(1:2)], by=list(disturb_summ$ecoreg3)
 ### Frequency of the 21 original disturbance types ####
 
 log2 <- table(env_all$ecoreg3, env_all$ORIGINE, env_all$logging)[,,3][,c("CBA", "CBT", "CPR", "CT")]
-nat2 <- table(env_all$ecoreg3, env_all$ORIGINE, env_all$natural)[,,3][,c("BR", "ES", "CHT","DT")]
+nat2 <- table(env_all$ecoreg3, env_all$ORIGINE, env_all$natural)[,,3][,c("BR", "ES", "CHT", "DT")]
 
-log1 <- table(env_all$ecoreg3, env_all$PERTURB, env_all$logging)[,,2][,c("CAM","CB","CD","CDL","CE","CJ","CP","EPC")]
+log1 <- table(env_all$ecoreg3, env_all$PERTURB, env_all$logging)[,,2][,c("CAM", "CB", "CD", "CDL", "CE", "CJ", "CP", "EPC")]
 nat1 <- table(env_all$ecoreg3, env_all$PERTURB, env_all$natural)[,,2][,c("BRP", "EL", "CHP", "VEP", "DP")]
 
 disturb_types <- list("No or minor" = disturb_summ[,2],
@@ -54,7 +54,7 @@ disturb_types <- list("No or minor" = disturb_summ[,2],
 
 
 disturb_types <- lapply(disturb_types, sort_col)
-lapply(disturb_types,sum)
+lapply(disturb_types, sum)
 
 disturb_code <- list(c("Outbreak", "Windfall", "Decline", "Burn", "Ice storm"),
                      c("Burn", "Outbreak", "Windfall", "Decline"),

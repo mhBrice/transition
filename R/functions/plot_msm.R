@@ -28,13 +28,18 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
     # Color
     col_pt <- rep(NA, n_var)
     
-    col_pt[which(signif==1 & coef[,1]>1)] <- "dodgerblue4"
-    col_pt[which(signif==0 & coef[,1]>1)] <- "#C3D3E2"
-    col_pt[which(signif==1 & coef[,1]<1)] <- "#B41414"
-    col_pt[which(signif==0 & coef[,1]<1)] <- "#ECC4C4"
+    col_pt[which(coef[,1] > 1)] <- "#094987"
+    col_pt[which(coef[,1] < 1)] <- "#b30c0c"
+    
+    # pch
+    pch_pt <- rep(NA, n_var)
+    
+    pch_pt[which(signif==1)] <- 19
+    pch_pt[which(signif==0)] <- 1
+
     
     if(!(logy)) coef <- log2(coef)
-    trans_list[[trans[i]]] <- cbind.data.frame(coef, signif, col_pt=col_pt)
+    trans_list[[trans[i]]] <- cbind.data.frame(coef, signif, col_pt=col_pt, pch_pt=pch_pt)
   }
 
   # Layout
@@ -46,7 +51,7 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
   diag(mat) <- 11:14
   mat <- rbind(mat, 15:18)
   
-  layout(mat, heights = c(1,1,1,1,.5))  
+  layout(mat, heights = c(1,1,1,1,.6))  
   
   # Plot
   par(mar = c(.3,2,.3,.5), oma = c(0,2,1.5,0))
@@ -81,8 +86,8 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
            length = 0, col = "grey65", lwd = 1.5, xpd = NA)
     
     # points
-    points(tmp$HR, pch = 19, 
-           col = as.character(tmp$col_pt), cex = 1.4)
+    points(tmp$HR, pch = tmp$pch_pt, 
+           col = as.character(tmp$col_pt), cex = 1.4, lwd = 1.1)
     
     # axis
     if(logy) {
@@ -109,7 +114,7 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
   par(mar = c(.5,2,.1,.5))
   for(i in 1:4) {
     plot0(x=1:n_var, y=rep(0,n_var))
-    text(x=1:n_var, y=rep(1,n_var), labels = varnames, font=2, cex = .8,
+    text(x=1:n_var, y=rep(1.1,n_var), labels = varnames, font=1, cex = 1.1,
          srt = 90, xpd = NA, adj = 1) 
   }
 
@@ -121,111 +126,7 @@ plot_risk <- function(mod, mod0=NULL, varnames=NULL,
 }
 
 
-### plot risk ratio in column ####
 
-plot_risk2 <- function(mod, mod0=NULL, varnames=NULL, 
-                      states=c("Boreal", "Mixed", "Pioneer", "Temperate"),
-                      logy = T) {
-  
-  # Model fit - McFadden R2
-  # rsq <- round((1 - mod$minus2loglik/mod0$minus2loglik)*100, 2)
-  
-  
-  # Get estimates, CI and p-value
-  HR <- hazard.msm(mod)
-  
-  if(is.null(varnames)) varnames <- names(HR)
-  
-  n_var <- length(varnames)
-  
-  trans <- rownames(HR[[1]])
-  
-  trans_list <- list()
-  
-  for(i in 1:length(trans)) {
-    coef <- lapply(HR, function(x) x[i,])
-    coef <- do.call(rbind, coef)
-    
-    signif <- ifelse(coef[,2] <= 1 & coef[,3] <= 1 | coef[,2] >= 1 & coef[,3] >= 1, 1, 0)
-    
-    
-    # Color
-    col_pt <- rep(NA, n_var)
-    
-    col_pt[which(signif==1 & coef[,1]>1)] <- "dodgerblue4"
-    col_pt[which(signif==0 & coef[,1]>1)] <- "#C3D3E2"
-    col_pt[which(signif==1 & coef[,1]<1)] <- "#B41414"
-    col_pt[which(signif==0 & coef[,1]<1)] <- "#ECC4C4"
-    
-    if(!(logy)) coef <- log2(coef)
-    trans_list[[trans[i]]] <- cbind.data.frame(coef, signif, col_pt=col_pt)
-  }
-  
-  # Layout
-  mat <- matrix(c(1:20),
-                10, 2, byrow = T)
-  mat <- rbind(mat, c(21,0))
-  
-  layout(mat,widths = c(1,.5))  
-  
-  # Plot
-  par(oma = c(0,1.5,0,0))
-  for(i in trans) {
-    
-    tmp <- trans_list[[i]]
-    
-    if(logy) {
-      log <- "y"
-      #ylim <- c(0.05,100)
-      h <- 1
-      labx <- "Hazard ratio"
-    } else {
-      log <- ""
-      #ylim <- c(-6,7)
-      h <- 0
-      labx <- "Hazard ratio (log base 2)"
-    }
-    ylim <- range(lapply(trans_list, function(x) range(x[,1:3])))
-    
-    par(mar = c(.5,2,.5,.5))
-    plot(tmp$HR, log = log, ylim = ylim, col = "transparent", 
-         ann=F, xaxt="n", yaxt="n",  bty = "l", frame.plot = T)
-
-    abline(h=h, col = "grey65")
-
-    
-    # bars for confidence interval
-    arrows(x0 = 1:n_var, 
-           y0 = tmp$L,
-           y1 = tmp$U, 
-           angle = 90, code = 1, 
-           length = 0, col = "grey65", lwd = 1.5, xpd = NA)
-    
-    # points
-    points(tmp$HR, pch = 21, bg = as.character(tmp$col_pt), col = as.character(tmp$col_pt))
-    
-    # axis
-    
-    if(logy) {
-      axis(2, at=seq(0,100,1), tcl= -0.2, labels=F, col = "grey35")
-      axis(2, at=c(.1,1,10,100), labels = c(.1,1,10,100), las=1, cex.axis = .8)
-    } else {
-      axis(2, tcl= -0.2, labels=F, col = "grey35")
-      axis(2, las=1, cex.axis = .8)
-    }
-    
-    par(mar = c(.5,.1,.5,.1))
-    plot0(text = i, fill = "grey95", cex = 1.1, font = 2)
-  }
-  
-
-  par(mar = c(.5,2,.1,.5))
-  plot0(x=1:n_var, y=rep(0,n_var))
-  text(x=1:n_var, y=rep(1,n_var), labels = varnames, font=2, cex = .8,
-       srt = 90, xpd = NA, adj = 1) 
-
-  mtext(labx, 2,  line = 0.5, cex=.8, font = 2, las=0,outer=T)
-}
 
 ### Function to plot transition matrix ####
 

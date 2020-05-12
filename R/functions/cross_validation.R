@@ -27,7 +27,10 @@ make_forms <- function(covar, covar_p = NULL) {
   return(covariates)
 }
 
+
+
 ### FAST TRANSITION DATA ####
+
 to_trans <- function(data, covar_names = NULL) {
 
   states_trans <- data %>% 
@@ -43,6 +46,8 @@ to_trans <- function(data, covar_names = NULL) {
     filter(!is.na(to)) %>% select(plot_id, year1, year2, t, from, to, trans, covar_names)
 }
 
+
+
 ### CREATE FOLD  ####
 
 kfold <- function(strata, k = 10, id) {
@@ -54,6 +59,8 @@ kfold <- function(strata, k = 10, id) {
   }
   fold <- lapply(fold, function(x) id[x])
 }
+
+
 
 ### CHECK COVARIATE DISTRIBUTION IN FOLD ####
 
@@ -73,14 +80,15 @@ check_fold <- function(fold, data, data_trans) {
 }
 
 
+
 ### CROSS VALIDATION OF MSM ####
 
 cv_msm <- function(data, fold, Q, covar_form, covar_names, covinits = NULL) {
   cv_res <- list()
   for(i in names(fold)){
     print(paste("Cross validation of", i))
-    train <- data %>% filter(!(plot_id %in% fold[[i]])) #training set
-    validation <- data %>% filter(plot_id %in% fold[[i]]) #validation set
+    train <- data %>% filter(!(plot_id %in% fold[[i]])) # training set
+    validation <- data %>% filter(plot_id %in% fold[[i]]) # validation set
     
     #fit model on the train data
     msm_train <- msm(states_num ~ year_measured, 
@@ -89,9 +97,9 @@ cv_msm <- function(data, fold, Q, covar_form, covar_names, covinits = NULL) {
                      qmatrix = Q, 
                      gen.inits = TRUE,
                      obstype = 1, 
-                     control = list(trace=1, 
-                                    maxit=5000, 
-                                    fnscale = nrow(train)-5000),
+                     control = list(trace = 1, 
+                                    maxit = 5000, 
+                                    fnscale = nrow(train) - 5000),
                      opt.method = "optim",
                      covariates = covar_form, 
                      covinits = covinits) 
@@ -127,6 +135,7 @@ cv_msm <- function(data, fold, Q, covar_form, covar_names, covinits = NULL) {
 }
 
 
+
 ### PREDICTION ####
 
 msm_pred <- function(mod, covariates = NULL, t, from, 
@@ -143,17 +152,7 @@ msm_pred <- function(mod, covariates = NULL, t, from,
     pvec <- pmat[st_from,]
     p_ls[[i]] <- pvec
   }
-  
-  # if(ci == "none") {
+
   p_df <- do.call(rbind, p_ls)
-  # } else {
-  #   p_df <- list()
-  #   p_df[["estimate"]] <- do.call(rbind, lapply(p_ls, function(x) x[,"estimate"]))
-  #   p_df[["lower"]] <- do.call(rbind, lapply(p_ls, function(x) x[,"lower"]))
-  #   p_df[["upper"]] <- do.call(rbind, lapply(p_ls, function(x) x[,"upper"]))
-  #   
-  #   p_df <- lapply(p_df, "colnames <-", states)
-  # }
-  
-  
+
 }  

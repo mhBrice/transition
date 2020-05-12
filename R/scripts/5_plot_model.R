@@ -2,8 +2,8 @@
 
 # Table 2
 # Figure 4
-# Figure 5
-# Figure S4
+# Figure S6
+# Figure S7
 
 
 ### PACKAGES & FUNCTIONS ####
@@ -88,49 +88,24 @@ varnames <- c("Temperature", "CMI",
               "Natural 1", "Natural 2",
               "Logging 1", "Logging 2")
 
-pdf("res/fig4_HR.pdf",
-    width = 7, height = 6)
-#quartz(width = 7, height = 6)
+pdf("res/fig4_HR.pdf", width = 7, height = 6.2)
+
 plot_risk(msm_glb, varnames = varnames)
+
 dev.off()
 
 
+### FIGURE S6. PLOT TRANSITION PROBABILITY ####
 
-### FIGURE 5. PLOT TRANSITION MATRIX #####
-
-dist_title <- c("No or minor", "Moderate natural", "Major natural",
-                "Moderate logging", "Major logging")
-
-mat <- matrix(c(0,1,1,0,
-                2,2,4,4,
-                3,3,5,5),3,byrow = T)
-
-pdf("res/figS7_pmatrix.pdf", width = 4.2, height = 6.2)
-#quartz(width = 4.2, height = 6.2)
-layout(mat)
-par(mar=c(.5,2,3.5,1))
-for(i in 1:length(p_list)) {
-  tr <- p_list[[i]]
-  tr <- tr[["estimates"]]
-  #dimnames(tr) <- list(states,states)
-  if(i == 1) labels = TRUE else labels = FALSE
-  plot_trans(pmat=tr, states_lab = c("B", "M", "P", "T"),
-             labels = labels, main = dist_title[i])
-}
-dev.off()
-
-### FIGURE S4. PLOT TRANSITION PROBABILITY ####
-
-mat <- matrix(c(0:14,0,0,15,15,0), 5, 4)
-mat <- rbind(mat, c(0,16,16,0))
+mat <- matrix(c(0:14, 0, 0, 15, 15, 0), 5, 4)
+mat <- rbind(mat, c(0, 16, 16, 0))
 
 
-pdf("res/figS6_proba.pdf",
-    width = 7, height = 7)
-#quartz(width = 7, height = 7)
-layout(mat, widths = c(.6,1,1,.45), heights = c(.17,1,1,1,1,.2))
+pdf("res/figS6_proba.pdf", width = 7, height = 7)
 
-par(mar=c(9,0,1,2))
+layout(mat, widths = c(.6, 1, 1, .45), heights = c(.17, 1, 1, 1, 1, .2))
+
+par(mar = c(9, 0, 1, 2))
 
 for(st in states) {
   plot0(fill = "grey95")
@@ -138,20 +113,20 @@ for(st in states) {
 }
 
 
-par(mar=c(0,2,0,0))
+par(mar = c(0,2,0,0))
 plot0(text = "Natural", fill = "grey95", font = 2, cex = 1.2)
-par(mar=c(1,2,1,.5))
+par(mar = c(1, 2, 1, .5))
 plot_pmatrix(msm_glb, covar = covar_nat)
 
-par(mar=c(0,2,0,0))
+par(mar = c(0, 2, 0, 0))
 plot0(text = "Logging", fill = "grey95", font = 2, cex = 1.2)
-par(mar=c(1,2,1,.5))
-plot_pmatrix(msm_glb, covar = covar_log, yaxis = F)
+par(mar = c(1, 2, 1, .5))
+plot_pmatrix(msm_glb, covar = covar_log, yaxis = FALSE)
 
-mtext("Probability of transition", 2, line = -9.8, outer = T, cex= .75, font =2)
+mtext("Probability of transition", 2, line = -9.8, outer = TRUE, cex= .75, font =2)
 
 # Legend
-par(mar=c(5,0,4,0))
+par(mar = c(5, 0, 4, 0))
 plot0()
 legend("top", legend = states, title = "Transition to",
        col = st_col, cex = 1.1, lwd = 1.3, bty = "n")
@@ -165,3 +140,30 @@ plot0(text = "Time (Years)", font = 2, cex = 1.1)
 dev.off()
 
 
+
+### FIGURE S7. PLOT TRANSITION MATRIX #####
+
+dist_title <- c("No or minor", "Moderate natural", "Major natural",
+                "Moderate logging", "Major logging")
+
+mat <- matrix(c(0, 1, 1, 0,
+                2, 2, 4, 4,
+                3, 3, 5, 5), nrow = 3, byrow = TRUE)
+
+pdf("res/figS7_pmatrix.pdf", width = 4.2, height = 6.2)
+
+layout(mat)
+
+par(mar = c(.5, 2, 3.5, 1))
+
+for(i in 1:length(p_list)) {
+  tr <- p_list[[i]]
+
+  tr <- tr[["estimates"]]
+
+  if(i == 1) labels = TRUE else labels = FALSE
+
+  plot_trans(pmat = tr, states_lab = c("B", "M", "P", "T"),
+             labels = labels, main = dist_title[i])
+}
+dev.off()
