@@ -1,5 +1,7 @@
 # Paper: Moderate disturbances accelerate forest transition dynamics under climate change in the temperate-boreal ecotone of eastern North America
 
+[![DOI](https://zenodo.org/badge/192982340.svg)](https://zenodo.org/badge/latestdoi/192982340)
+
 This repository includes the data and R scripts to reproduce the analyses and figures found in the article *Moderate disturbances accelerate forest transition dynamics under climate change in the temperate-boreal ecotone of eastern North America* by Brice, Vissault, Vieira, Gravel, Legendre and Fortin published in Global Ecology and Biogeography. https://doi.org/10.1111/gcb.15143  
 
 ## Installation
